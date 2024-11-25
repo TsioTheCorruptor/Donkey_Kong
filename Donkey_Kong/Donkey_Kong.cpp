@@ -21,6 +21,8 @@ int main() {
 	board.print();
 	Pointmovement p;
 	p.setBoard(board);
+	board.reset();
+	board.print();
 	while (true) {
 		p.draw();
 		if (_kbhit()) {
