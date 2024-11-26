@@ -3,13 +3,14 @@
 
 #include <iostream>
 
-#include <iostream>
+
 #include <windows.h>
 #include <conio.h>
 
 #include "Board.h"
 #include "utils.h"
 #include "movement.h"
+#include "Mario.h"
 
 // Better put this is a proper class
 constexpr int ESC = 27;
@@ -18,11 +19,16 @@ int main() {
 	ShowConsoleCursor(false);
 	Board board;
 	board.reset();
+	
 	board.print();
+	Mario player;
+
 	Pointmovement p;
+	
+	player.set_mario_char('@');
+	p.set_movement_char(player.get_mario_char());
 	p.setBoard(board);
-	board.reset();
-	board.print();
+	
 	while (true) {
 		p.draw();
 		if (_kbhit()) {
@@ -30,9 +36,9 @@ int main() {
 			if (key == ESC) break;
 			p.keyPressed(key);
 		}
-		Sleep(50);
+		Sleep(80);
 		p.erase();
-		p.move();
+		p.move(player.collisions,player.col_length);
 	}
 }
 

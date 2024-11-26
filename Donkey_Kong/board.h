@@ -62,8 +62,9 @@ class Board {
 public:
 	void reset();
 	void print() const;
-	char getChar(int x, int y) const {
+	char getChar(int x, int y) const  {
 		return currentBoard[y][x];
 	}
+	
 };
 

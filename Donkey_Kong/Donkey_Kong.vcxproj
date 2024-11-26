@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
+    <ClInclude Include="Mario.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
