@@ -10,7 +10,7 @@ void Pointmovement::keyPressed(char key) {
 }
 
 void Pointmovement::move(const char colliders[],int length) {
-
+	
 	int newX = x + dir.x;
 	int newY = y + dir.y;
 	// Better use a function in Board to check if the new position is valid
@@ -19,7 +19,7 @@ void Pointmovement::move(const char colliders[],int length) {
 		dir = { 0, 0 };
 	}
 	else {
-		if (dir.x!=0||dir.y!=0){
+		if (!is_dir_0()){
         prevx = x;
 		prevy = y;
 		prev_char = pBoard->getChar(x, y);
@@ -39,6 +39,12 @@ bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, in
 		if (pBoard->getChar(Xpos, Ypos) == colliders[i])
 		return true;
 	}
+	return false;
+}
+bool Pointmovement::is_dir_0()
+{
+	if (dir.x == 0 && dir.y == 0)
+		return true;
 	return false;
 }
 

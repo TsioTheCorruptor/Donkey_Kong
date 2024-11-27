@@ -37,7 +37,9 @@ int main() {
 			p.keyPressed(key);
 		}
 		Sleep(80);
+		if(!p.is_dir_0())
 		p.erase();
+
 		p.move(player.collisions,player.col_length);
 	}
 }

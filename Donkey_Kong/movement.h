@@ -22,6 +22,7 @@ class Pointmovement {
 	void draw(char c)  {//removed const
 		gotoxy(x, y);
 		std::cout << c;
+		std::cout.flush();
 	}
 	bool IsColliding(const char colliders[], int length,int xpos,int ypos);
 	
@@ -53,5 +54,7 @@ public:
 		gotoxy(xpos, ypos);
 		std::cout << chr;
 	}
+	bool is_dir_0();
+	
 };
 
