@@ -1,20 +1,23 @@
 ﻿#pragma once
+
+#include "healthManager.h"
+
 class Board {
 	static constexpr int MAX_X = 80;
 	static constexpr int MAX_Y = 25;
 	const char* originalBoard[MAX_Y] = {
 		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-		  "Q                                                 .--.                         Q", // 1
-		  "Q  OO         !                                .-(    ).            __         Q", // 2
-		  "Q  OO   &     $                               (___.__)__)        ._(  ).       Q", // 3
-		  "Q =====================                                         (__.___)       Q", // 4
-		  "Q                   H                                                          Q", // 5
-		  "Q                   H                                             *            Q", // 6
-		  "Q         >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>            / `           Q", // 7
-		  "Q                                 H                             /   `          Q", // 8
-		  "Q                                 H                            /_____`         Q", // 9
-		  "Q                                 H                               |            Q", // 10
+		  "Q                                 .--.                           /`__/`    _   Q", // 1
+		  "Q  OO         !                .-(    ).            __          ///////`  | |  Q", // 2
+		  "Q  OO   &     $               (___.__)__)        ._(  ).        `//////    -   Q", // 3
+		  "Q =====================                         (__.___)          `///         Q", // 4
+		  "Q                   H                                               v          Q", // 5
+		  "Q                   H                                         *                Q", // 6
+		  "Q         >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>        / `               Q", // 7
+		  "Q                                 H                         /   `              Q", // 8
+		  "Q                                 H                        /_____`             Q", // 9
+		  "Q                                 H                           |                Q", // 10
 		  "Q                         <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<           Q", // 11
 		  "Q         O                                       H                            Q", // 12
 		  "Q         |                                       H                            Q", // 13
@@ -59,12 +62,14 @@ class Board {
 	};
 
 	char currentBoard[MAX_Y][MAX_X + 1]; // +1 for null terminator
+	Health* pHealth = nullptr;
 public:
 	void reset();
 	void print() const;
-	char getChar(int x, int y) const  {
+	char getChar(int x, int y) const {
 		return currentBoard[y][x];
 	}
-	
+
 };
+
 
