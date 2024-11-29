@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "movement.h"
 #include "Mario.h"
+#include "gameManager.h"
 
 // Better put this is a proper class
 constexpr int ESC = 27;
@@ -19,7 +20,6 @@ int main() {
 	ShowConsoleCursor(false);
 	Board board;
 	board.reset();
-	
 	board.print();
 	Mario player;
 
@@ -27,6 +27,7 @@ int main() {
 	
 	player.set_mario_char('@');
 	p.set_movement_char(player.get_mario_char());
+	//p.setBoard(board);
 	p.setBoard(board);
 	
 	while (true) {

@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "board.h"
 #include "Mario.h"
+#include "gameManager.h"
 class Pointmovement {
 	static constexpr char keys[] = { 'w', 'a', 'x', 'd', 's' };
 	static constexpr size_t numKeys = sizeof(keys) / sizeof(keys[0]);
@@ -19,6 +20,7 @@ class Pointmovement {
 	 char prev_char;
 	
 	Board* pBoard = nullptr;
+	//Game* pGame = nullptr;
 	void draw(char c)  {//removed const
 		gotoxy(x, y);
 		std::cout << c;
@@ -41,6 +43,9 @@ public:
 	void setBoard(Board& board) {
 		pBoard = &board;
 	}
+	/*void setGame(Game& game) {
+		pGame = &game;
+	}*/
 	void set_movement_char( char chr)
 	{
 		ch = chr;

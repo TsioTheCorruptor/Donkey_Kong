@@ -15,8 +15,16 @@ void Board::reset() {
 		if (pHealth != nullptr) {
 			delete pHealth;
 		}
-		pHealth = new Health();
-		pHealth->resetHealth();
+		//if starting a new game
+		if (pHealth == NULL) {
+			pHealth = new Health();
+			pHealth->resetHealth();
+			pHealth->startedOrFinishedGame();
+		}
+		//if not
+		else {
+			pHealth->lowerHealth();
+		}
 	}
 	if (i == 2) {
 		for (int i = 0; i < MAX_Y; i++) {
