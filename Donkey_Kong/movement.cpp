@@ -10,26 +10,42 @@ void Pointmovement::keyPressed(char key) {
 }
 
 void Pointmovement::move(const char colliders[],int length) {
+	bool IsGrounded = IsColliding(colliders, length, x, y + 1);
+	int  newX=x;
+	int newY=y;
+	if (IsGrounded)
+	{
+    newX= x + dir.x;
+	 newY= y + dir.y;
+	}
+	else
+	{
+		newY = y + 1;
+		dir = { 0,1 };
+	}                                       // Better use a function in Board to check if the new position is valid
+	                                        // + Better use a constant for the wall character
 	
-	int newX = x + dir.x;
-	int newY = y + dir.y;
-	// Better use a function in Board to check if the new position is valid
-	// + Better use a constant for the wall character
-	if (IsColliding(colliders,length,newX,newY)) {
-		dir = { 0, 0 };
-	}
-	else {
-		if (!is_dir_0()){
-        prevx = x;
-		prevy = y;
-		prev_char = pBoard->getChar(x, y);
-		draw_InPosition(x, y, prev_char);
-
+	
+		if (IsColliding(colliders, length, newX, newY)) {
+			dir = { 0, 0 };
 		}
-		
-		x = newX;
-		y = newY;
-	}
+
+		else {
+	      
+			if (!is_dir_0()) {
+				prevx = x;
+				prevy = y;
+				prev_char = pBoard->getChar(x, y);
+				draw_InPosition(x, y, prev_char);
+
+			}
+
+			x = newX;
+			y = newY;
+		}
+	
+	
+		std::cout.flush();
 }
 bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, int Ypos)
 {
@@ -41,6 +57,7 @@ bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, in
 	}
 	return false;
 }
+
 bool Pointmovement::is_dir_0()
 {
 	if (dir.x == 0 && dir.y == 0)
