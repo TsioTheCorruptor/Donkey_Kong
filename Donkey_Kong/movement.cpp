@@ -1,5 +1,6 @@
 #include "movement.h"
 
+
 void Pointmovement::keyPressed(char key) {
 	for (size_t i = 0; i < numKeys; i++) {
 		if (std::tolower(key) == keys[i]) {
@@ -15,7 +16,7 @@ void Pointmovement::move(const char colliders[],int length) {
 	int newY = y + dir.y;
 	// Better use a function in Board to check if the new position is valid
 	// + Better use a constant for the wall character
-	if (IsColliding(colliders,length,newX,newY)) {
+	if (IsColliding(colliders, length, newX, newY)) {
 		dir = { 0, 0 };
 	}
 	else {
