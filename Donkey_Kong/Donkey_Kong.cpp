@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <conio.h>
 
-#include "board.h"
+#include "Board.h"
 #include "utils.h"
 #include "movement.h"
 #include "Mario.h"
@@ -19,7 +19,7 @@ int main() {
 	ShowConsoleCursor(false);
 	Board board;
 	board.reset();
-
+	
 	board.print();
 	Mario player;
 

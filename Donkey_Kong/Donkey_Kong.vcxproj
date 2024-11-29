@@ -129,13 +129,11 @@
   <ItemGroup>
     <ClCompile Include="board.cpp" />
     <ClCompile Include="Donkey_Kong.cpp" />
-    <ClCompile Include="healthManager.cpp" />
     <ClCompile Include="movement.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
-    <ClInclude Include="healthManager.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="utils.h" />
