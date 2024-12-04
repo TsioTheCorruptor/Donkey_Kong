@@ -4,6 +4,7 @@
 
 #include "utils.h"
 #include "board.h"
+#include <conio.h>
 #define MAX_HEALTH 3
 
 class Game {
@@ -48,4 +49,5 @@ public:
 	/*char getChar(int x, int y) const {
 		return currentBoard[y][x];
 	}*/
+	
 };

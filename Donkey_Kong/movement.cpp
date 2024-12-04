@@ -13,7 +13,7 @@ void Pointmovement::move(const char colliders[],int length) {
 	bool IsGrounded = IsColliding(colliders, length, x, y + 1);
 	int  newX=x;
 	int newY=y;
-	if (IsGrounded)
+	if (IsGrounded||overwrite_gravity)
 	{
     newX= x + dir.x;
 	 newY= y + dir.y;
@@ -43,7 +43,7 @@ void Pointmovement::move(const char colliders[],int length) {
 			x = newX;
 			y = newY;
 		}
-	
+		overwrite_gravity = false;
 	
 		std::cout.flush();
 }
