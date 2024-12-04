@@ -29,9 +29,8 @@ void Pointmovement::move(const char colliders[],int length) {
 		if (IsColliding(colliders, length, newX, newY)) {
 			dir = { 0, 0 };
 		}
-
 		else {
-	      
+	     
 			if (!is_dir_0()) {
 				prevx = x;
 				prevy = y;
@@ -39,13 +38,12 @@ void Pointmovement::move(const char colliders[],int length) {
 				draw_InPosition(x, y, prev_char);
 
 			}
-
-			x = newX;
-			y = newY;
+                x = newX;
+		    	y = newY;
+			
 		}
 		overwrite_gravity = false;
-	
-		std::cout.flush();
+		
 }
 bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, int Ypos)
 {
