@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <iostream>
 #include "movement.h"
 #include "board.h"
@@ -43,4 +43,4 @@ bool is_jumping()
 }
 int GetMoveType(char key);
 
-};
+};*/

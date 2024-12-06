@@ -1,4 +1,4 @@
-#include "Mario_abilities.h"
+/*#include "Mario_abilities.h"
 void  Mario_abilities::Jump_InDirection(const Jump_InOrder* order, int length) {
 	move_type=1;
 	jumping = true;
@@ -97,4 +97,4 @@ void Mario_abilities::InLadder()
 		
 		}
 	}
-}
+}*/
