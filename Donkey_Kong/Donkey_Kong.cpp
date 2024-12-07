@@ -13,6 +13,7 @@
 #include "Mario.h"
 #include "gameManager.h"
 #include "Mario_abilities.h"
+#include "Barreles.h"
 // Better put this is a proper class
 constexpr int ESC = 27;
 
@@ -30,9 +31,15 @@ int main() {
 	player_point.setBoard(board);
 	player.SetPointMovement(player_point);
 	player.SetBoard(board);
+	Barreles barrel[10];
+	Pointmovement barrel_point[10];
+	barrel[10].setTheBarreles(barrel, barrel_point, board);
+	
+	int i = 10;
 	while (true) {
 		char key = ' ';
 		player_point.draw();
+		barrel[10].checkAndDrawBarreles(barrel, barrel_point);
 		if (_kbhit()) {
 			
 			 key = _getch();
@@ -42,7 +49,8 @@ int main() {
 		Sleep(80);
 		if(!player_point.is_dir_0())
 			player_point.erase();
-
+		
+		barrel[10].moveBarreles(barrel, barrel_point);
 		switch (player.GetMoveType(key))
 		{
 		case player.no_moves ://default case
@@ -60,9 +68,9 @@ int main() {
 			player_point.move(player.collisions, player.col_length);
 			break;
 		 }
+		i++;
 		
-		
-		
+
 	}
 }
 

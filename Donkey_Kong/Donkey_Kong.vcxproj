@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Barreles.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="Donkey_Kong.cpp" />
     <ClCompile Include="gameManager.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Barreles.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="gameManager.h" />
     <ClInclude Include="healthManager.h" />
