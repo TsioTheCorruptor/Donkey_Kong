@@ -4,28 +4,37 @@
 #include "movement.h"
 #include "board.h"
 
-class Barreles {
+class Barrel {
 
 	char barrel_char = 'O';
 	Pointmovement* barrel_movement = nullptr;
 	Board* pBoard = nullptr;
+	static constexpr int barrelsAmount = 20; //maybe in main? outside of this class?
 	int prev_dirX;
 	int prev_dirY;
 	int waitTime;     
 	bool isOnBoard;
-	int amountFallen;
+	int lengthFallen;
 	bool exploded;
 
  public:
-	Barreles() : prev_dirX(0), prev_dirY(0), waitTime(0), isOnBoard(false), amountFallen(0), exploded(false) {}
+
+	Barrel() : prev_dirX(0), prev_dirY(0), waitTime(0), isOnBoard(false), lengthFallen(0), exploded(false) {}
+
 	static constexpr char collisions[4] = { 'Q','<','=','>' };
+
 	int col_length = 4;
 
-	void setTheBarreles(Barreles barrel[], Pointmovement barrel_point[], Board board);
+	//maybe outside of this class?
+	static constexpr int getBarrelsAmount() {
+		return barrelsAmount;
+	}
 
-	void checkAndDrawBarreles(Barreles barrel[], Pointmovement barrel_point[]);
+	void setTheBarrel(Barrel& barrel, Pointmovement& barrel_point, Board& board, int i);
 
-	void moveBarreles(Barreles barrel[], Pointmovement barrel_point[]);
+	void checkAndDrawBarrel(Barrel& barrel, Pointmovement& barrel_point);
+
+	void moveBarrel(Barrel& barrel, Pointmovement& barrel_point);
 
 	char get_barrel_char() {
 		return barrel_char;

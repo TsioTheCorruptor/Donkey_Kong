@@ -31,15 +31,18 @@ int main() {
 	player_point.setBoard(board);
 	player.SetPointMovement(player_point);
 	player.SetBoard(board);
-	Barreles barrel[10];
-	Pointmovement barrel_point[10];
-	barrel[10].setTheBarreles(barrel, barrel_point, board);
-	
-	int i = 10;
+	const int size = Barrel::getBarrelsAmount();
+	Barrel barrel[size];
+	Pointmovement barrel_point[size];
+	for (int i = 0; i < size; i++) {
+		barrel[i].setTheBarrel(barrel[i], barrel_point[i], board, i);
+	}
 	while (true) {
 		char key = ' ';
 		player_point.draw();
-		barrel[10].checkAndDrawBarreles(barrel, barrel_point);
+		for (int i = 0; i < size; i++) {
+			barrel[i].checkAndDrawBarrel(barrel[i], barrel_point[i]);
+		}
 		if (_kbhit()) {
 			
 			 key = _getch();
@@ -49,8 +52,10 @@ int main() {
 		Sleep(80);
 		if(!player_point.is_dir_0())
 			player_point.erase();
+		for (int i = 0; i < size; i++) {
+			barrel[i].moveBarrel(barrel[i], barrel_point[i]);
+		}
 		
-		barrel[10].moveBarreles(barrel, barrel_point);
 		switch (player.GetMoveType(key))
 		{
 		case player.no_moves ://default case
@@ -68,9 +73,6 @@ int main() {
 			player_point.move(player.collisions, player.col_length);
 			break;
 		 }
-		i++;
-		
-
 	}
 }
 
