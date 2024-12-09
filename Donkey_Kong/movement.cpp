@@ -58,10 +58,11 @@ void Pointmovement::move(const char colliders[],int length) {
 }
 bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, int Ypos)
 {
+	char toCheck = pBoard->getChar(Xpos, Ypos);
 	for (int i = 0; i < length; i++)
 	{
 		
-		if (pBoard->getChar(Xpos, Ypos) == colliders[i])
+		if (toCheck == colliders[i])
 		return true;
 	}
 	return false;

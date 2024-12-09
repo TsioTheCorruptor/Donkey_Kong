@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <conio.h>
+#include <vector>
 
 #include "Board.h"
 #include "utils.h"
@@ -29,19 +30,25 @@ int main() {
 	player_point.setBoard(board);
 	player.SetPointMovement(player_point);
 	player.SetBoard(board);
-
-	const int size = 5;
-	Barrel barrel[size];
-	Pointmovement barrel_point[size];
-	for (int i = 0; i < size; i++) {
-		barrel[i].setTheBarrel(barrel[i], barrel_point[i], board, i);
-	}
+	std::vector <Barrel> barrel;
+	std::vector <Pointmovement> barrel_point;
+	int waitTime = 10;
 	while (true) {
+
+		//Every 10 itteration create a new barrel and connect it to the board
+		if (waitTime % 10 == 0) {
+			int currIndex = barrel.size();
+			barrel.emplace(barrel.begin(), Barrel());
+			barrel_point.emplace(barrel_point.begin(), Pointmovement());
+			barrel.front().setTheBarrel(barrel.front(), barrel_point.front(), board, 0);
+			for (int i = 1; i < barrel.size(); ++i) {
+				barrel[i].SetPointMovement(barrel_point[i]);
+			}
+		}
 		char key = ' ';
 		player_point.draw();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < barrel.size(); i++) {
 			barrel[i].checkAndDrawBarrel(barrel[i], barrel_point[i]);
-
 		}
 		if (_kbhit()) {
 			
@@ -49,15 +56,14 @@ int main() {
 			if (key == ESC) break;
 			player_point.keyPressed(key);
 		}
-		Sleep(80);
-		if(!player_point.is_dir_0())
+		Sleep(1);
+		if (!player_point.is_dir_0())
 			player_point.erase();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < barrel.size(); i++) {
 			barrel[i].moveBarrel(barrel[i], barrel_point[i]);
+			if (barrel[i].isExploded()) 
+				barrel.pop_back();
 		}
-		
-
-
 		switch (player.GetMoveType(key))
 		{
 		case player.no_moves ://default case
@@ -79,6 +85,8 @@ int main() {
 			player_point.move(player.collisions, player.col_length);
 			break;
 		 }
+		waitTime++;
+		//std::cout << "reached loop:" << waitTime / 10 << std::endl;
 	}
 }
 
