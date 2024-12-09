@@ -9,16 +9,17 @@ class Barrel {
 	char barrel_char = 'O';
 	Pointmovement* barrel_movement = nullptr;
 	Board* pBoard = nullptr;
-	static constexpr int barrelsAmount = 20; //maybe in main? outside of this class?
+	static constexpr int barrelsAmount = 5; //maybe in main? outside of this class?
 	int prev_dirX;
 	int prev_dirY;
 	int waitTime;     
 	bool isOnBoard;
 	int lengthFallen;
 	bool exploded;
+	
 
  public:
-
+int barrel_index = 0;
 	Barrel() : prev_dirX(0), prev_dirY(0), waitTime(0), isOnBoard(false), lengthFallen(0), exploded(false) {}
 
 	static constexpr char collisions[4] = { 'Q','<','=','>' };

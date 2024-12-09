@@ -15,6 +15,7 @@ class Game {
 	int healthPosY = 2;
 	int health = MAX_HEALTH;
 	bool newGame = true;
+	
 
 	/*const char* healthDisplay[MAX_Y][MAX_Z] = {
 		{" __ ",
@@ -30,7 +31,8 @@ class Game {
 	char currentHealthDisplay[MAX_Y][MAX_X + 1]; // +1 for null terminator*/
 	Board* pBoard = nullptr;
 public:
-
+    static constexpr char player_char = '@';
+	static constexpr char ladder_char = 'H';
 	void draw(int c)  const {
 		gotoxy(healthPosX, healthPosY);
 		std::cout << c;

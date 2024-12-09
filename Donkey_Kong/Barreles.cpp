@@ -7,7 +7,7 @@ void Barrel::setTheBarrel(Barrel& barrel, Pointmovement& barrel_point, Board& bo
 	barrel_point.setBoard(board);
 	barrel.SetPointMovement(barrel_point);
 	barrel.SetBoard(board);
-	barrel.setWaitTime(i * 10);
+	barrel.setWaitTime(5*i);
 
 }
 //This function checks the condition of the barrels and prints them accordingly
@@ -70,9 +70,8 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		lengthFallen++;
 	}
 	//If the barrel hits a wall, return to the main x, y point
-	if (colliders[0] == pBoard->getChar(barrel_movement->GetX() - 1, barrel_movement->GetY())) {
-		//barrel_movement->x = 9;
-		//barrel_movement->y = 3;
+	if (barrel_movement->IsColliding(colliders,col_length,barrel_movement->GetX()+barrel_movement->GetDirX(), barrel_movement->GetY()) || barrel_movement->IsColliding(colliders, col_length, barrel_movement->GetX() + barrel_movement->GetDirX(), barrel_movement->GetY())) {
+		barrel_movement->SetPos(9, 3);
 	}
 }
 

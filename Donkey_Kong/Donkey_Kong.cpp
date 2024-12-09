@@ -24,14 +24,13 @@ int main() {
 	board.print();
 	Mario player;
 	Pointmovement player_point;
-	bool in_action = false;
-	bool test = false;
 	player.set_mario_char('@');
 	player_point.set_movement_char(player.get_mario_char());
 	player_point.setBoard(board);
 	player.SetPointMovement(player_point);
 	player.SetBoard(board);
-	const int size = Barrel::getBarrelsAmount();
+
+	const int size = 5;
 	Barrel barrel[size];
 	Pointmovement barrel_point[size];
 	for (int i = 0; i < size; i++) {
@@ -42,6 +41,7 @@ int main() {
 		player_point.draw();
 		for (int i = 0; i < size; i++) {
 			barrel[i].checkAndDrawBarrel(barrel[i], barrel_point[i]);
+
 		}
 		if (_kbhit()) {
 			
@@ -56,6 +56,8 @@ int main() {
 			barrel[i].moveBarrel(barrel[i], barrel_point[i]);
 		}
 		
+
+
 		switch (player.GetMoveType(key))
 		{
 		case player.no_moves ://default case
@@ -67,6 +69,10 @@ int main() {
 		case player.jumping:
 			player.Jump();
 			player_point.move(player.collisions, player.col_length);
+
+			if(!player_point.is_dir_0())
+			player_point.set_dir(player.currdir.x, player.currdir.y);
+
 	    break;
 		case player.ladder:
 			player.InLadder();

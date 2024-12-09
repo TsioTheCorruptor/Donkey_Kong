@@ -2,22 +2,32 @@
 #include <iostream>
 #include "movement.h"
 #include "board.h"
+#include "gameManager.h"
 class Mario {
 
 
  char mario_char = '@';
  struct Jump_InOrder { int x, y; };
+ bool go_below_ground = false;
+ 
+ int move_stage = 0;
+
  static constexpr Jump_InOrder jump_inorder_right[] = { {0, -1}, {1, -1}, {1, 1}, {0,1} };
  int move_count_right = 4;
+
  static constexpr Jump_InOrder jump_inorder_left[] = { {0, -1}, {-1, -1}, {-1, 1}, {0,1} };
  int move_count_left = 4;
+
  static constexpr Jump_InOrder jump_inorder_neutral[] = { {0, -1},{0, -1} };
  int move_count_neutral = 2;
+
  bool isjumping = false;
  bool ladder_up = true;
  Pointmovement* pm = nullptr;
  Board* board = nullptr;
+
 public:
+	Jump_InOrder currdir = { 0,0 };
 static constexpr char collisions[4] = { 'Q','<','=','>'};
 enum move_type {no_moves,jumping,ladder};
 	move_type curr_move = no_moves;
@@ -43,7 +53,7 @@ enum move_type {no_moves,jumping,ladder};
 	void Jump();
 	void InLadder();
 
-	void Jump_InDirection(const Jump_InOrder* order, int length);
+	void Jump_InDirection(const Jump_InOrder* order, int length,int currdirx,int currdiey);
 	bool is_jumping()
 	{
 		return isjumping;

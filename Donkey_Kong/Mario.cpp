@@ -1,12 +1,13 @@
 #include "Mario.h"
-void  Mario::Jump_InDirection(const Jump_InOrder* order, int length) {
+void  Mario::Jump_InDirection(const Jump_InOrder* order, int length, int currdirx, int currdiry) {
 	curr_move=jumping;
 	isjumping = true;
-	static int move_stage = 0;
+	
 	pm->set_dir(order[move_stage].x, order[move_stage].y);
 	move_stage++;
-	if (move_stage >= length)
+	if (move_stage >= length||pm->IsCollidingInNextDir(collisions,col_length))
 	{
+		
 		move_stage = 0;
 		curr_move=no_moves;
 		isjumping = false;
@@ -16,7 +17,7 @@ void  Mario::Jump_InDirection(const Jump_InOrder* order, int length) {
 }
 void  Mario::Jump()
 {
-	static Jump_InOrder currdir;
+	
 	if (!isjumping)
 	{
 		currdir.x = pm->GetDirX();
@@ -24,13 +25,13 @@ void  Mario::Jump()
 	}
 
 	if (currdir.x == 1 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_right, move_count_right);
+		Jump_InDirection(jump_inorder_right, move_count_right, currdir.x, currdir.y);
 
 	if (currdir.x == -1 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_left, move_count_left);
+		Jump_InDirection(jump_inorder_left, move_count_left, currdir.x, currdir.y);
 
 	if (currdir.x == 0 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_neutral, move_count_neutral);
+		Jump_InDirection(jump_inorder_neutral, move_count_neutral,currdir.x, currdir.y);
 }
 
 
@@ -42,7 +43,7 @@ int  Mario::GetMoveType(char key)
 	{
 		curr_move=jumping;
 	}
-	if (key == 'w' && isgrounded && pm->GetCurrentBackgroundChar() == 'H')
+	if (key == 'w' && isgrounded && pm->GetCurrentBackgroundChar() =='H')
 	{
 		ladder_up = true;
 		curr_move=ladder;
@@ -74,13 +75,13 @@ void Mario::InLadder()
 	}
 	if (!ladder_up)
 	{
-		static bool once = false;
+		
 		bool detected_ground = false;
-		if (once == false)
+		if (go_below_ground == false)
 		{
 			detected_ground = pm->IsColliding(collisions, col_length, pm->GetX(), pm->GetY() + 2);
 			pm->set_dir(0, 2);
-			once = true;
+			go_below_ground = true;
 		}
 		else
 		{
@@ -93,7 +94,7 @@ void Mario::InLadder()
 		{
 			curr_move=no_moves;
 			pm->set_dir(0, 0);
-			once = false;
+			go_below_ground = false;
 
 		}
 	}

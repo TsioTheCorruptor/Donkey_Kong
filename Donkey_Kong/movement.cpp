@@ -13,15 +13,26 @@ void Pointmovement::move(const char colliders[],int length) {
 	bool IsGrounded = IsColliding(colliders, length, x, y + 1);
 	int  newX=x;
 	int newY=y;
+	if(keep_momentum_always)
+	keep_momentum = true;
+
 	if (IsGrounded||overwrite_gravity)
 	{
+    keep_momentum = false;
     newX= x + dir.x;
 	 newY= y + dir.y;
 	}
 	else
 	{
-		newY = y + 1;
+		int tempx = dir.x;
 		dir = { 0,1 };
+		if (keep_momentum)
+		{
+          newX = x +tempx;
+		  dir.x=tempx;
+		}
+		newY = y + 1;
+		
 	}                                       // Better use a function in Board to check if the new position is valid
 	                                        // + Better use a constant for the wall character
 	
@@ -55,11 +66,21 @@ bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, in
 	}
 	return false;
 }
+bool Pointmovement::IsCollidingInNextDir(const char colliders[], int length) 
+{
+	return IsColliding(colliders, length, x + dir.x, y + dir.y);
+}
 
 bool Pointmovement::is_dir_0()
 {
 	if (dir.x == 0 && dir.y == 0)
 		return true;
 	return false;
+}
+void Pointmovement::SetPos(int posx, int posy)
+{
+	x = posx;
+	y = posy;
+
 }
 

@@ -14,7 +14,8 @@ class Pointmovement {
 	static constexpr Direction directions[] = {  {-1, 0}, {1, 0}, {0, 0} };
 	int x =9, y =3;
 	int prevx = 1, prevy = 1;
-
+	bool keep_momentum = false;
+	bool keep_momentum_always =true;
 	Direction dir{ 0, 0 }; // current direction: dir.x, dir.y
 	 char ch=' ';
 	 char prev_char=' ';
@@ -31,7 +32,7 @@ class Pointmovement {
 	
 public:
 bool IsColliding(const char colliders[], int length,int xpos,int ypos);
-
+bool IsCollidingInNextDir(const char colliders[], int length) ;
 	void draw()
 	{//removed const
 		draw(ch);
@@ -88,5 +89,6 @@ bool IsColliding(const char colliders[], int length,int xpos,int ypos);
 	{
 		return pBoard->getChar(x,y);
 	}
+	void SetPos(int posx, int posy);
 };
 
