@@ -6,27 +6,40 @@
 
 class Barrel {
 
-	char barrel_char = 'O';
-	Pointmovement* barrel_movement = nullptr;
-	Board* pBoard = nullptr;
-	int prev_dirX;
-	int prev_dirY;
-	int lengthFallen;
-	bool exploded;
+	 char barrel_char = 'O';
+	 Pointmovement barrel_movement;
+	 Board* pBoard = nullptr;
+	int prev_dirX=0;
+	int prev_dirY=0;
+    int start_posX=0 ;
+    int start_posY=0;
+	int lengthFallen=0;
 	
 
+	static constexpr char collisions[] = { '@','Q','<','=','>'};
+	enum coll_hit{player,wall,floor_left,neutral_floor,floor_right };//order has to stay
+
+     int col_length = 5;
+     bool exploded=false;
+	 int explode_delay = 5;
+	 int explode_stage = 0;
+	 bool stop_movement = false;
  public:
-	Barrel() : prev_dirX(0), prev_dirY(0), lengthFallen(0), exploded(false) {}
+	
+	 Barrel( int posx,  int posy, Pointmovement point, Board& board) :start_posX(posx),
+		 start_posY(posy), barrel_movement(point), pBoard(&board) {
+		
+	 }
 
-	static constexpr char collisions[4] = { 'Q','<','=','>' };
+	//Barrel() : prev_dirX(0), prev_dirY(0), lengthFallen(0), exploded(false) {}
 
-	int col_length = 4;
+	
 
-	void setTheBarrel(Barrel& barrel, Pointmovement& barrel_point, Board& board, int i);
+	
 
-	void checkAndDrawBarrel(Barrel& barrel, Pointmovement& barrel_point);
+	void checkAndDrawBarrel();
 
-	void moveBarrel(Barrel& barrel, Pointmovement& barrel_point);
+	
 
 	char get_barrel_char() {
 		return barrel_char;
@@ -34,15 +47,12 @@ class Barrel {
 	void set_barrel_char(const char chr) {
 		barrel_char = chr;
 	}
-	void SetPointMovement(Pointmovement& pm_) {
-		barrel_movement = &pm_;
-	}
-	void SetBoard(Board& _board) {
-		pBoard = &_board;
-	}
+	
 	void getBarrelDir(const char colliders[]);
 
 	bool isExploded() {
 		return exploded;
 	}
+	void DrawBarrel();
+	
 };

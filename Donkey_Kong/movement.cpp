@@ -9,8 +9,10 @@ void Pointmovement::keyPressed(char key) {
 	}
 }
 
-void Pointmovement::move(const char colliders[],int length) {
-	bool IsGrounded = IsColliding(colliders, length, x, y + 1);
+void Pointmovement::move(const char colliders[],const int length) {
+	bool IsGrounded = IsCollidingInGround(colliders,length);
+	
+
 	int  newX=x;
 	int newY=y;
 	if(keep_momentum_always)
@@ -26,12 +28,13 @@ void Pointmovement::move(const char colliders[],int length) {
 	{
 		int tempx = dir.x;
 		dir = { 0,1 };
+		newY = y + 1;
 		if (keep_momentum)
 		{
           newX = x +tempx;
 		  dir.x=tempx;
 		}
-		newY = y + 1;
+		
 		
 	}                                       // Better use a function in Board to check if the new position is valid
 	                                        // + Better use a constant for the wall character
@@ -43,10 +46,9 @@ void Pointmovement::move(const char colliders[],int length) {
 		else {
 	     
 			if (!is_dir_0()) {
-				prevx = x;
-				prevy = y;
+				
 				prev_char = pBoard->getChar(x, y);
-				draw_InPosition(x, y, prev_char);
+				pBoard->draw_InPosition(x, y, prev_char);
 
 			}
                 x = newX;
@@ -56,7 +58,7 @@ void Pointmovement::move(const char colliders[],int length) {
 		overwrite_gravity = false;
 		
 }
-bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, int Ypos)
+bool Pointmovement::IsColliding(const char colliders[], const int length ,int Xpos, int Ypos)
 {
 	char toCheck = pBoard->getChar(Xpos, Ypos);
 	for (int i = 0; i < length; i++)
@@ -67,7 +69,7 @@ bool Pointmovement::IsColliding(const char colliders[], int length ,int Xpos, in
 	}
 	return false;
 }
-bool Pointmovement::IsCollidingInNextDir(const char colliders[], int length) 
+bool Pointmovement::IsCollidingInNextDir(const char colliders[], const int length) 
 {
 	return IsColliding(colliders, length, x + dir.x, y + dir.y);
 }
@@ -83,5 +85,9 @@ void Pointmovement::SetPos(int posx, int posy)
 	x = posx;
 	y = posy;
 
+}
+bool  Pointmovement::IsCollidingInGround(const char colliders[], int length)
+{
+	return IsColliding(colliders, length, x, y + 1);
 }
 

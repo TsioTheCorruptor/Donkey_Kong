@@ -6,7 +6,7 @@ void gotoxy(int x, int y) {
     std::cout.flush();
     COORD coord; // Create a COORD structure 
     coord.X = x; // Set the X coordinate 
-    coord.Y = y+1; // Set the Y coordinate 
+    coord.Y = y; // Set the Y coordinate 
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord); // Move the cursor 
 }
 

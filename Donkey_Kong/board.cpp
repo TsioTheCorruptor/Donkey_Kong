@@ -6,16 +6,16 @@
 
 void Board::reset() {
 	//int i is just to check, not final
-	int i;
-	std::cin >> i;
-	if (i == 1) {
+	int i=0;
+//	std::cin >> i;
+	//if (i == 1) {
 		for (int i = 0; i < MAX_Y; i++) {
 			memcpy(currentBoard[i], originalBoard[i], MAX_X + 1);
 		}
-		if (pHealth != nullptr) {
+		/*if (pHealth != nullptr) {
 			delete pHealth;
 		}
-		//if starting a new game
+		if starting a new game
 		if (pHealth == NULL) {
 			pHealth = new Health();
 			pHealth->resetHealth();
@@ -24,8 +24,8 @@ void Board::reset() {
 		//if not
 		else {
 			pHealth->lowerHealth();
-		}
-	}
+		}*/
+	//}
 	if (i == 2) {
 		for (int i = 0; i < MAX_Y; i++) {
 			memcpy(currentBoard[i], mainMenu[i], MAX_X + 1);
@@ -39,7 +39,7 @@ void Board::print() const {
 		std::cout << currentBoard[i] << '\n';
 	}
 	std::cout << currentBoard[MAX_Y - 1];
-	pHealth->printHealth();
+	//pHealth->printHealth();
 }
 
 

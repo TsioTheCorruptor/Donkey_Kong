@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+/*#include <iostream>
 
 #include "utils.h"
 #define MAX_HEALTH 3
@@ -8,14 +8,14 @@
 class Health {
 	/*static constexpr int MAX_X = 4;
 	static constexpr int MAX_Y = 3;
-	static constexpr int MAX_Z = 3;*/
+	static constexpr int MAX_Z = 3;
 	int healthPosX = 75;
 	int healthPosY = 2;
 	int health = MAX_HEALTH;
 	bool newGame = true;
 	
 
-	/*const char* healthDisplay[MAX_Y][MAX_Z] = {
+	const char* healthDisplay[MAX_Y][MAX_Z] = {
 		{" __ ",
 		 " __|",
 		 " __|"},
@@ -26,7 +26,7 @@ class Health {
 		 "  |",
 		 "  |",}
 	};
-	char currentHealthDisplay[MAX_Y][MAX_X + 1]; // +1 for null terminator*/
+	char currentHealthDisplay[MAX_Y][MAX_X + 1]; // +1 for null terminator
 
 public:
 	void draw(int c)  const {
@@ -45,8 +45,8 @@ public:
 	bool isNewGame() {
 		return newGame;
 	}
-	/*char getChar(int x, int y) const {
+	char getChar(int x, int y) const {
 		return currentBoard[y][x];
-	}*/
+	}
 
-};
+};*/

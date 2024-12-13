@@ -1,5 +1,5 @@
 
-#include <cstring>
+/*#include <cstring>
 #include <iostream>
 
 #include "healthManager.h"
@@ -20,4 +20,4 @@ void Health::lowerHealth() {
 		//start over the game, game over screen etc...
 
 	}
-}
+}*/

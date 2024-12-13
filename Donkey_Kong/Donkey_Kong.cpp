@@ -1,25 +1,15 @@
 // Donkey_Kong.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
 
-
-#include <windows.h>
-#include <conio.h>
-#include <vector>
-
-#include "Board.h"
-#include "utils.h"
-#include "movement.h"
-#include "Mario.h"
 #include "gameManager.h"
-#include "Mario_abilities.h"
-#include "Barreles.h"
-// Better put this is a proper class
-constexpr int ESC = 27;
+
+//constexpr int ESC = 27;
 
 int main() {
-	ShowConsoleCursor(false);
+	Game game;
+	game.level();
+	/*ShowConsoleCursor(false);
 	Board board;
 	board.reset();
 	board.print();
@@ -56,7 +46,7 @@ int main() {
 			if (key == ESC) break;
 			player_point.keyPressed(key);
 		}
-		Sleep(1);
+		Sleep(80);
 		if (!player_point.is_dir_0())
 			player_point.erase();
 		for (int i = 0; i < barrel.size(); i++) {
@@ -87,7 +77,7 @@ int main() {
 		 }
 		waitTime++;
 		//std::cout << "reached loop:" << waitTime / 10 << std::endl;
-	}
+	}*/
 }
 
 

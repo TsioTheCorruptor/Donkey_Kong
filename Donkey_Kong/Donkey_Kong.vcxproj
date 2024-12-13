@@ -133,7 +133,6 @@
     <ClCompile Include="gameManager.cpp" />
     <ClCompile Include="healthManager.cpp" />
     <ClCompile Include="Mario.cpp" />
-    <ClCompile Include="Mario_Abilities.cpp" />
     <ClCompile Include="movement.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -143,7 +142,6 @@
     <ClInclude Include="gameManager.h" />
     <ClInclude Include="healthManager.h" />
     <ClInclude Include="Mario.h" />
-    <ClInclude Include="Mario_abilities.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "movement.h"
 #include "board.h"
-#include "gameManager.h"
+
 class Mario {
 
 
@@ -12,11 +12,11 @@ class Mario {
  
  int move_stage = 0;
 
- static constexpr Jump_InOrder jump_inorder_right[] = { {0, -1}, {1, -1}, {1, 1}, {0,1} };
- int move_count_right = 4;
+ static constexpr Jump_InOrder jump_inorder_right[] = { {0, -1}, {1, -1},{1,0},{1,1}, {0,1} };
+ int move_count_right = 5;
 
- static constexpr Jump_InOrder jump_inorder_left[] = { {0, -1}, {-1, -1}, {-1, 1}, {0,1} };
- int move_count_left = 4;
+ static constexpr Jump_InOrder jump_inorder_left[] = { {0, -1}, {-1, -1},{-1,0}, {-1, 1}, {0,1}};
+ int move_count_left = 5;
 
  static constexpr Jump_InOrder jump_inorder_neutral[] = { {0, -1},{0, -1} };
  int move_count_neutral = 2;
@@ -28,11 +28,13 @@ class Mario {
 
 public:
 	Jump_InOrder currdir = { 0,0 };
+	
 static constexpr char collisions[4] = { 'Q','<','=','>'};
+int col_length = 4;
 enum move_type {no_moves,jumping,ladder};
 	move_type curr_move = no_moves;
 
-	int col_length = 4;
+	
 	 char  get_mario_char()
 	{
 		return mario_char;

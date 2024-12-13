@@ -3,7 +3,7 @@ void  Mario::Jump_InDirection(const Jump_InOrder* order, int length, int currdir
 	curr_move=jumping;
 	isjumping = true;
 	
-	pm->set_dir(order[move_stage].x, order[move_stage].y);
+	pm->set_dir(order[move_stage].x, order[move_stage].y,true);
 	move_stage++;
 	if (move_stage >= length||pm->IsCollidingInNextDir(collisions,col_length))
 	{
@@ -67,11 +67,11 @@ void Mario::InLadder()
 		if (detected_ceiling)
 		{
 			curr_move=no_moves;
-			pm->set_dir(0, -2);
+			pm->set_dir(0, -2,true);
 			pm->move(collisions,col_length);
-			pm->set_dir(0, 0);
+			pm->set_dir(0, 0,false);
 		}
-		else pm->set_dir(0, -1);
+		else pm->set_dir(0, -1,true);
 	}
 	if (!ladder_up)
 	{
@@ -80,20 +80,20 @@ void Mario::InLadder()
 		if (go_below_ground == false)
 		{
 			detected_ground = pm->IsColliding(collisions, col_length, pm->GetX(), pm->GetY() + 2);
-			pm->set_dir(0, 2);
+			pm->set_dir(0, 2,false);
 			go_below_ground = true;
 		}
 		else
 		{
 			detected_ground = pm->IsColliding(collisions, col_length, pm->GetX(), pm->GetY() + 1);
-			pm->set_dir(0, 1);
+			pm->set_dir(0, 1,true);
 		}
 
 
 		if (detected_ground)
 		{
 			curr_move=no_moves;
-			pm->set_dir(0, 0);
+			pm->set_dir(0, 0,false);
 			go_below_ground = false;
 
 		}
