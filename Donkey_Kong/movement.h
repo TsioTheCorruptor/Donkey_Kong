@@ -20,7 +20,7 @@ class Pointmovement {
 	
 	 char movement_char=' ';
 	 char prev_char=' ';
-	 bool overwrite_gravity = false;
+	 bool overwrite_gravity = true;
 	 bool Grounded = false;
 	Board* pBoard = nullptr;
 	
@@ -108,7 +108,7 @@ bool IsGrounded()
 	}
 	const char GetCurrentBackgroundChar() const
 	{
-		return pBoard->getChar(x,y);
+		return pBoard->getOgChar(x,y);
 	}
 	
 	const char GetPrevChar() const

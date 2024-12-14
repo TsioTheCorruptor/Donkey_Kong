@@ -9,7 +9,7 @@ ShowConsoleCursor(false);
 	pBoard.reset();
 	pBoard.print();
 	Mario player;
-	Pointmovement player_point('@',9,3,pBoard);
+	Pointmovement player_point('@',9,22,pBoard);
 	player.set_mario_char('@');
 	player_point.set_movement_char(player.get_mario_char());
 	player.SetPointMovement(player_point);
@@ -17,11 +17,15 @@ ShowConsoleCursor(false);
 	std::vector <Barrel> barrel;
 	int waitTime = 10;
 	while (true) {
-
+		if (health <= 2)
+		{
+			std::cout << "dead";
+			health++;
+		}
 		//Every 10 itteration create a new barrel and connect it to the board
-		if (waitTime % 15 == 0) {
+		if (waitTime % 10 == 0) {
 
-		//	Pointmovement barrel_point;
+		
 			barrel.emplace_back(9, 3, Pointmovement('O', 10, 3, pBoard), pBoard);
 
 		}
@@ -30,22 +34,41 @@ ShowConsoleCursor(false);
 	
 		char key = ' ';
 		
-		//pBoard.draw_InPosition(player_point.GetX(), player_point.GetY(), player_point.GetPrevChar());
-		//player_point.SetPrevChar();
+		
 		player_point.draw();	
 		for (auto it = barrel.begin(); it != barrel.end();)
 		{
-			//it->SetPrevChar();
+			
          it->DrawBarrel();
 		 it++;
 		}
-
+		DamageTaken(player_point);
 	
 
 		if (_kbhit()) {
 
 			key = _getch();
-			if (key == ESC) break;
+			if (key == ESC)
+			{
+				pBoard.printmenu();
+				pause_game = true;
+			}
+			while (pause_game==true)
+			{
+			
+				if (_kbhit())
+				{
+
+					key =_getch();
+					if (key == ESC)
+					{
+						pBoard.print();
+						pause_game = false;
+
+					}
+						
+				}
+			}
 			
 			player_point.keyPressed(key);
 		}
@@ -80,7 +103,7 @@ ShowConsoleCursor(false);
 			player_point.move(player.collisions, player.col_length);
 			break;
 		}
-//DamageTaken(player_point);
+		//DamageTaken(player_point);
 
 		for (auto it = barrel.begin(); it != barrel.end();) {//put in func
 			it->checkAndDrawBarrel();
@@ -127,14 +150,40 @@ void Game:: DamageTaken(Pointmovement player_movement)
 {
 	int playerX = player_movement.GetX();
 	int playerY = player_movement.GetY();
-	char chr = pBoard.getChar(playerX, playerY+9);
+	char point = pBoard.getChar(playerX, playerY);
+	char point_withdir = pBoard.getChar(playerX+player_movement.GetDirX(), playerY+player_movement.GetDirY());
+    
 	for (int i = 0; i < col_length; i++)
 	{
-		if ( chr== damagecollisions[i])
+		if ( point== damagecollisions[i])
 		{
-			currhealth--;
+		health--;
 			break;
 		}
+		 
+		if (check_collision_dir)
+		{
+			char pointafterdir = pBoard.getChar(damage_collision_checkX, damage_collision_checkY);
+
+			if (pointafterdir == damagecollisions[i])
+			{
+				health--;
+				
+				break;
+				
+			}
+			check_collision_dir = false;
+
+		}
+       if (point_withdir == damagecollisions[i])
+		{
+			damage_collision_checkX = playerX;
+			damage_collision_checkY = playerY;
+			check_collision_dir = true;
+		}
+		
 	}
+
+	
 }
 

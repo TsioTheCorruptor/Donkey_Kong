@@ -47,7 +47,7 @@ void Pointmovement::move(const char colliders[],const int length) {
 	     
 			if (!is_dir_0()) {
 				
-				prev_char = pBoard->getChar(x, y);
+				prev_char = pBoard->getOgChar(x, y);
 				pBoard->draw_InPosition(x, y, prev_char);
 
 			}
@@ -60,7 +60,7 @@ void Pointmovement::move(const char colliders[],const int length) {
 }
 bool Pointmovement::IsColliding(const char colliders[], const int length ,int Xpos, int Ypos)
 {
-	char toCheck = pBoard->getChar(Xpos, Ypos);
+	char toCheck = pBoard->getOgChar(Xpos, Ypos);
 	for (int i = 0; i < length; i++)
 	{
 		

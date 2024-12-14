@@ -23,7 +23,7 @@ class Mario {
 
  bool isjumping = false;
  bool ladder_up = true;
- Pointmovement* pm = nullptr;
+ Pointmovement* player_movement = nullptr;
  Board* board = nullptr;
 
 public:
@@ -45,7 +45,7 @@ enum move_type {no_moves,jumping,ladder};
 	}
 	void SetPointMovement(Pointmovement& pm_)
 	{
-		pm = &pm_;
+		player_movement = &pm_;
 	}
 	
 	void SetBoard(Board& _board)

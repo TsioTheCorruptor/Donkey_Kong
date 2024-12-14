@@ -19,17 +19,16 @@ class Barrel {
 	static constexpr char collisions[] = { '@','Q','<','=','>'};
 	enum coll_hit{player,wall,floor_left,neutral_floor,floor_right };//order has to stay
 
-     int col_length = 5;
+   static constexpr  int col_length = 5;
+   static constexpr int explode_delay = 5;
      bool exploded=false;
-	 int explode_delay = 5;
+	
 	 int explode_stage = 0;
 	 bool stop_movement = false;
  public:
 	
 	 Barrel( int posx,  int posy, Pointmovement point, Board& board) :start_posX(posx),
-		 start_posY(posy), barrel_movement(point), pBoard(&board) {
-		
-	 }
+		 start_posY(posy), barrel_movement(point), pBoard(&board) { }
 
 	//Barrel() : prev_dirX(0), prev_dirY(0), lengthFallen(0), exploded(false) {}
 

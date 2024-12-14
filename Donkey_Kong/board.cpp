@@ -35,11 +35,20 @@ void Board::reset() {
 }
 
 void Board::print() const {
+	gotoxy(0, 0);
 	for (int i = 0; i < MAX_Y - 1; i++) {
 		std::cout << currentBoard[i] << '\n';
 	}
 	std::cout << currentBoard[MAX_Y - 1];
 	//pHealth->printHealth();
+}
+void Board::printmenu() const
+{
+	gotoxy(0, 0);
+	for (int i = 0; i < MAX_Y - 1; i++) {
+		std::cout << PauseGame[i] << '\n';
+	}
+	std::cout << PauseGame[MAX_Y - 1];
 }
 
 

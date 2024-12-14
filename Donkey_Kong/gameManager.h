@@ -26,8 +26,10 @@ class Game {
 	int health = MAX_HEALTH;
 	bool newGame = true;
 	int currhealth = 0;
-	
-
+	bool pause_game = false;
+	int damage_collision_checkX = 0;
+	int damage_collision_checkY = 0;
+	bool check_collision_dir = false;
 	/*const char* healthDisplay[MAX_Y][MAX_Z] = {
 		{" __ ",
 		 " __|",
@@ -43,10 +45,10 @@ class Game {
 	Board pBoard ;
 	
 public:
-	const int MAXhealth = 3;
+	
     static constexpr char player_char = '@';
 	static constexpr char ladder_char = 'H';
-	static constexpr char damagecollisions[] = { '@' };
+	static constexpr char damagecollisions[] = { 'O' };
 	int col_length = 1;
 	void draw(int c)  const {
 		gotoxy(healthPosX, healthPosY);
