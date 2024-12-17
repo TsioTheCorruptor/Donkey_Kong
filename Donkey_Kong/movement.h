@@ -16,12 +16,14 @@ class Pointmovement {
 	int x =9, y =3;
 	int prevx = 1, prevy = 1;
 	bool keep_momentum = false;
-	bool keep_momentum_always = true;
+	bool keep_momentum_always =false;
 	
 	 char movement_char=' ';
 	 char prev_char=' ';
 	 bool overwrite_gravity = true;
 	 bool Grounded = false;
+	 int iterations_in_air = 0;
+	 
 	Board* pBoard = nullptr;
 	
 	void draw(char c)  {//removed const
@@ -63,9 +65,6 @@ bool IsGrounded()
 	void setBoard(Board& board) {
 		pBoard = &board;
 	}
-	/*void setGame(Game& game) {
-		pGame = &game;
-	}*/
 	void set_movement_char( char chr)
 	{
 		movement_char = chr;
@@ -74,12 +73,6 @@ bool IsGrounded()
 	{
 		prev_char = chr;
 	}
-	/*void draw_InPosition(int xpos, int ypos, char chr)
-	{
-		gotoxy(xpos, ypos);
-		std::cout << chr;
-		pBoard->setChar(xpos, ypos, chr);
-	}*/
 	bool is_dir_0();
 	void set_dir(int dirx, int diry,bool overwrite_grav)
 	{
@@ -118,6 +111,10 @@ bool IsGrounded()
 	 void SetPrevChar() 
 	{
 		 prev_char=pBoard->getChar(x,y);
+	}
+	 const int GetAirTime() const
+	 {
+		 return iterations_in_air;
 	}
 };
 

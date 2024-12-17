@@ -2,31 +2,41 @@
 
 
 //This function checks the condition of the barrels and prints them accordingly
-void Barrel::checkAndDrawBarrel() {
+void Barrel::checkAndMoveBarrel() {
+	//erase only if dir isnt 00,to avoid flickering
 	if (!barrel_movement.is_dir_0())
+	{
 		barrel_movement.erase();
-	//If the barrel didnt explode (and by that ended its life)
-	if (!exploded) {
+	}
+		
+	//If the barrel didnt fully explode (and by that ended its life)
+	if (!explosion_ended) {
 		getBarrelDir(collisions);
 
+		
 		if (!stop_movement)
 			barrel_movement.move(collisions,col_length);
 		
 
-		if (get_barrel_char() == '*') {
-			
+		if (get_barrel_char() == explosion_char) {
+			explosion_started = true;
 			if (explode_stage >= explode_delay)
-				exploded = true;
+				explosion_ended = true;
 			else
 				explode_stage++;
 		}
+	}
+	else
+	{ //making sure that after an explosion,any background char will not be affected
+        barrel_movement.set_movement_char(pBoard->getOgChar(barrel_movement.GetX(),barrel_movement.GetY()));
+		barrel_movement.draw();
 	}
 }
 
 //Get the current direction of the barrel, also check if the distance fallen could cause an explosion
 void Barrel::getBarrelDir(const char colliders[]) {
 
-	//Get the char o
+	//Get the relevent chars for barrel collision detection
 	char floorchar = pBoard->getChar(barrel_movement.GetX(), barrel_movement.GetY() + 1);
 	char leftchar = pBoard->getChar(barrel_movement.GetX() + 1, barrel_movement.GetY());
 	char rightchar = pBoard->getChar(barrel_movement.GetX() - 1, barrel_movement.GetY());
@@ -39,8 +49,8 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		prev_dirY = 0;
 		if (lengthFallen >= 8) {
 			stop_movement = true;
-			set_barrel_char('*');
-			barrel_movement.set_movement_char('*');
+			set_barrel_char(explosion_char);
+			barrel_movement.set_movement_char(explosion_char);
 		}
 		lengthFallen = 0;
 		
@@ -52,12 +62,10 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		prev_dirY = 0;
 		if (lengthFallen >= 8) {
 			stop_movement = true;
-			set_barrel_char('*');
-			barrel_movement.set_movement_char('*');
+			set_barrel_char(explosion_char);
+			barrel_movement.set_movement_char(explosion_char);
 		}
 		lengthFallen = 0;
-		
-		//std::cout << "hit floor ";
 	}
 	//If the barrel hits a '=' floor, stay or move at the saved direction
 	else if (colliders[neutral_floor] == floorchar){
@@ -73,31 +81,26 @@ void Barrel::getBarrelDir(const char colliders[]) {
 			
 		if (lengthFallen >= 8) {
 			stop_movement = true;
-			set_barrel_char('*');
-			barrel_movement.set_movement_char('*');
+			set_barrel_char(explosion_char);
+			barrel_movement.set_movement_char(explosion_char);
 		}
 		lengthFallen = 0;
 		
 	}
 	//If there is nothing below the barrel, increase the amount of characters fallen
-	else if (' ' == floorchar) {
+	else  {
 		lengthFallen++;
 	}
 	
-	//If the barrel hits a wall, return to the main x, y point
-	if (colliders[player] == leftchar || colliders[wall] == rightchar) {
-
-	}
 	if (colliders[wall] == leftchar || colliders[wall] == rightchar) {
 		stop_movement = true;
-		set_barrel_char('*');
-		barrel_movement.set_movement_char('*');
+		set_barrel_char(explosion_char);
+		barrel_movement.set_movement_char(explosion_char);
 	}
 }
 
 
 void Barrel::DrawBarrel()
 {
-	
 	barrel_movement.draw();
 }

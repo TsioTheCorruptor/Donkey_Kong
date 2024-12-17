@@ -20,35 +20,36 @@ void  Mario::Jump()
 	
 	if (!isjumping)
 	{
-		currdir.x = player_movement->GetDirX();
-		currdir.y = player_movement->GetDirY();
+		savedirX = player_movement->GetDirX();
+		savedirY = player_movement->GetDirY();
 	}
 
-	if (currdir.x == 1 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_right, move_count_right, currdir.x, currdir.y);
+	if (savedirX == 1 && savedirY == 0)
+		Jump_InDirection(jump_inorder_right, move_count_right, savedirX, savedirY);
 
-	if (currdir.x == -1 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_left, move_count_left, currdir.x, currdir.y);
+	if (savedirX == -1 && savedirY == 0)
+		Jump_InDirection(jump_inorder_left, move_count_left, savedirX, savedirY);
 
-	if (currdir.x == 0 && currdir.y == 0)
-		Jump_InDirection(jump_inorder_neutral, move_count_neutral,currdir.x, currdir.y);
+	if (savedirX == 0 && savedirY == 0)
+		Jump_InDirection(jump_inorder_neutral, move_count_neutral, savedirX, savedirY);
 }
 
 
 
 int  Mario::GetMoveType(char key)
 {
+	key = tolower(key);
 	bool isgrounded = player_movement->IsColliding(collisions, col_length, player_movement->GetX(), player_movement->GetY() + 1);
-	if (key == 'w' && isgrounded)
+	if (key == upkey && isgrounded)
 	{
 		curr_move=jumping;
 	}
-	if (key == 'w' && isgrounded && player_movement->GetCurrentBackgroundChar() =='H')
+	if (key == upkey && isgrounded && player_movement->GetCurrentBackgroundChar() ==ladder_char)
 	{
 		ladder_up = true;
 		curr_move=ladder;
 	}
-	if (key == 'x' && isgrounded && board->getOgChar(player_movement->GetX(), player_movement->GetY() + 2) == 'H')
+	if (key == downkey && isgrounded && board->getOgChar(player_movement->GetX(), player_movement->GetY() + 2) == 'H')
 	{
 		ladder_up = false;
 		curr_move=ladder;

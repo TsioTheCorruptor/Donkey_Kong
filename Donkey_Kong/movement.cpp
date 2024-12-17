@@ -11,7 +11,20 @@ void Pointmovement::keyPressed(char key) {
 
 void Pointmovement::move(const char colliders[],const int length) {
 	bool IsGrounded = IsCollidingInGround(colliders,length);
-	
+	if (Grounded == true)
+	{
+		iterations_in_air = 0;
+	}
+
+	if (!IsGrounded)
+	{
+		Grounded = false;
+	}	
+	else
+	{
+		Grounded = true;
+	}
+		
 
 	int  newX=x;
 	int newY=y;
@@ -20,12 +33,14 @@ void Pointmovement::move(const char colliders[],const int length) {
 
 	if (IsGrounded||overwrite_gravity)
 	{
+		
     keep_momentum = false;
     newX= x + dir.x;
 	 newY= y + dir.y;
 	}
 	else
 	{
+		iterations_in_air++;
 		int tempx = dir.x;
 		dir = { 0,1 };
 		newY = y + 1;
@@ -61,6 +76,7 @@ void Pointmovement::move(const char colliders[],const int length) {
 bool Pointmovement::IsColliding(const char colliders[], const int length ,int Xpos, int Ypos)
 {
 	char toCheck = pBoard->getOgChar(Xpos, Ypos);
+	
 	for (int i = 0; i < length; i++)
 	{
 		
