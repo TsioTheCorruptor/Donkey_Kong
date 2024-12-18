@@ -33,12 +33,13 @@ class Mario {
 
  static constexpr char collisions[4] = { 'Q','<','=','>'};//mario collisions
  static constexpr int col_length = 4;
+enum move_type {no_moves,jumping,ladder};//mario states
+	move_type curr_move = no_moves;
 public:
 	
 	
 
-enum move_type {no_moves,jumping,ladder};//mario states
-	move_type curr_move = no_moves;
+
 
 	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard ) : 
 		mario_char(player_char),ladder_char(ladder_Char), player_movement(&player_Movement), board(&pBoard) {}
@@ -46,6 +47,7 @@ enum move_type {no_moves,jumping,ladder};//mario states
 	
 	void Jump();
 	void InLadder();
+	void DoMarioMoves(int key);
     void Jump_InDirection(const Jump_InOrder* order, int length,int currdirx,int currdiey);
 	const int GetSavedDirX()const { return savedirX; }
 	const int GetSavedDirY()const { return savedirY; }

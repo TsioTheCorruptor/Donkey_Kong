@@ -104,3 +104,31 @@ void Mario::InLadder()
 		}
 	}
 }
+void Mario::DoMarioMoves(int key)
+{
+	switch (GetMoveType(key))
+	{
+	case no_moves://default case
+
+		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+		std::cout.flush();
+		break;
+
+	case jumping:
+		Jump();
+		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+
+		//save direction before jumping
+		if (!player_movement->is_dir_0())
+		{
+			player_movement->set_dir(GetSavedDirX(),GetSavedDirY(), false);
+		}
+
+
+		break;
+	case ladder:
+		InLadder();
+		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+		break;
+	}
+}

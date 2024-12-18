@@ -5,18 +5,15 @@ void Game::level_1()
 {
 ShowConsoleCursor(false);
 	//each reset,before the game loop
-    pBoard.reset();
-	pBoard.print();
-	PrintLives();
-	//set starting point for mario and barrels
-	int player_startX = 12;
-	int player_startY = 22;
-	int barrel_startX = 9;
-	int barrel_startY = 3;
-	
+SetupLevel();
+//set starting point for mario and barrels
+int player_startX = 12;
+int player_startY = 23;
+int barrel_startX = 9;
+int barrel_startY = 3;
 	Pointmovement player_point(player_char,player_startX,player_startY,pBoard);
+	player_point.set_dir(0, 0,false);
 	Mario player(player_char,ladder_char,player_point,pBoard);
-	std::vector <Barrel> barrel;
 	
 	//each reset,before the game loop
 
@@ -44,14 +41,8 @@ ShowConsoleCursor(false);
 		//check health,reset accordingly
 		if(HealthCheck())
 		    break;
-
 		if (IsPaulineReached(player_point))
 			break;
-
-	
-		
-			
-	
 	char key = ' ';
 		//in this part we will check the player input,we will also determine if pausing the game in required
 		if (_kbhit()) {
@@ -65,67 +56,20 @@ ShowConsoleCursor(false);
 			player_point.keyPressed(key);
 			PauseGame();
 		}
-		
-		//delay per iteration
+		//delay per iteration(may be specific per level)
 		Sleep(80);
-		
-	
-		
 		//check according to player input which move mario will do
-		switch (player.GetMoveType(key))
-		{
-		case player.no_moves://default case
-
-			player_point.move(player.GetCollisionArray(), player.GetCollisionArrayLength());
-			std::cout.flush();
-			break;
-
-		case player.jumping:
-			player.Jump();
-			player_point.move(player.GetCollisionArray(), player.GetCollisionArrayLength());
-
-			//save direction before jumping
-			if (!player_point.is_dir_0() )
-			{
-             player_point.set_dir(player.GetSavedDirX(), player.GetSavedDirY(), false);
-			}
-			
-
-			break;
-		case player.ladder:
-			player.InLadder();
-			player_point.move(player.GetCollisionArray(), player.GetCollisionArrayLength());
-			break;
-		}
+		player.DoMarioMoves(key);
 		//check collisions with barrels again
 		DamageTaken(player_point);
-		
           //erase char in last position,do it only while mario is moving to prevent flickering
 		if (!player_point.is_dir_0())
 			player_point.erase();
-		//check explosions and move barrels
-		for (auto it = barrel.begin(); it != barrel.end();) {
-			it->checkAndMoveBarrel();
-			if (it->isExploding())
-			{
-				ExplosionDamageTaken(it->GetposX(), it->GetposY(), player_point);
-			}
-			if (it->isExploded())
-			{
-				//restore char in the explosion pos,remove barrel from database
-					it->checkAndMoveBarrel();
-					it = barrel.erase(it);
-			}
-			else
-			{//go to next barrel
-				it++;
-			}
-		}
+        //check explosions and move barrels
+		MoveBarrels(player_point);
 		
-		
-		curr_barrel_waitTime++;
-		
-		
+	
+		curr_barrel_waitTime++;	
 	}
 }
 
@@ -311,5 +255,33 @@ void Game::PauseGame()
    {
 	   gotoxy(health_displayX, health_displayY);
 	   std::cout << lives;
+   }
+   void Game::SetupLevel()
+   {
+	   barrel.clear();
+	   pBoard.reset();
+	   pBoard.print();
+	   PrintLives();
+	  
+   }
+   void Game::MoveBarrels(Pointmovement player_movement)
+   {
+	   for (auto it = barrel.begin(); it != barrel.end();) {
+		   it->checkAndMoveBarrel();
+		   if (it->isExploding())
+		   {
+			   ExplosionDamageTaken(it->GetposX(), it->GetposY(),player_movement);
+		   }
+		   if (it->isExploded())
+		   {
+			   //restore char in the explosion pos,remove barrel from database
+			   it->checkAndMoveBarrel();
+			   it = barrel.erase(it);
+		   }
+		   else
+		   {//go to next barrel
+			   it++;
+		   }
+	   }
    }
 

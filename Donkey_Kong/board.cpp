@@ -21,6 +21,7 @@ void Board::print() const {
 	}
 	std::cout << currentBoard[MAX_Y - 1];
 	
+	
 }
 void Board::printPause()const 
 {
@@ -30,6 +31,7 @@ void Board::printPause()const
 		std::cout << PauseGame[i] << '\n';
 	}
 	std::cout << PauseGame[MAX_Y - 1];
+	
 }
 void Board::printMenu()const
 {
@@ -40,6 +42,7 @@ void Board::printMenu()const
 		std::cout << mainMenu[i] << '\n';
 	}
 	std::cout << mainMenu[MAX_Y - 1];
+	
 }
 void Board::printGameOver()const
 {
@@ -50,6 +53,7 @@ void Board::printGameOver()const
 		std::cout << gameOver[i] << '\n';
 	}
 	std::cout << gameOver[MAX_Y - 1];
+	
 }
 void Board::printVictory()const
 {
@@ -60,6 +64,7 @@ void Board::printVictory()const
 		std::cout << gameWon[i] << '\n';
 	}
 	std::cout << gameWon[MAX_Y - 1];
+	
 }
 void Board::printInstructions()const
 {

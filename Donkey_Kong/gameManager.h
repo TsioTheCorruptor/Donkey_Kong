@@ -36,7 +36,7 @@ class Game {
 	//health pos in board(just for one level for now)
 	static constexpr int  health_displayX = 76;
 	static constexpr int  health_displayY = 2;
-	int barrel_waitTime = 20;
+	int barrel_waitTime = 15;
 	int curr_barrel_waitTime = barrel_waitTime;
 	//screen time of specific boards
 	int GO_screentime = 2000;
@@ -44,6 +44,7 @@ class Game {
 	 enum  gameState{menu,level,reset,game_over,victory,exit_game,instructions};//game states
 	 int currstate = menu;
 	 Board pBoard ;
+	 std::vector <Barrel> barrel;
 	
 	
 	static constexpr char damagecollisions[] = { 'O'};
@@ -58,6 +59,8 @@ public:
 	bool HealthCheck();
 	void inMenu();
     void PrintLives();
+	void SetupLevel();
+	void MoveBarrels(Pointmovement player_movement);
 	void DamageTaken(Pointmovement player_movement);
 	void FallDamageTaken(Pointmovement player_movement);
 	void ExplosionDamageTaken(int barrelx, int barrely, Pointmovement player_movement);

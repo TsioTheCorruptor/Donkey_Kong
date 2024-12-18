@@ -29,27 +29,22 @@ void Pointmovement::move(const char colliders[],const int length) {
 
 	int  newX=x;
 	int newY=y;
-	if(keep_momentum_always)//made for moving while in air,and for falling down diagonally
-	keep_momentum = true;
+	
 
 	if (IsGrounded||overwrite_gravity)//if in ground or gravity is ignored,move to next dir
 	{
 		
-    keep_momentum = false;
+   
     newX= x + dir.x;
 	 newY= y + dir.y;
 	}
 	else
 	{//fall down,if momentum is kept,also add the x dir 
 		iterations_in_air++;
-		int tempx = dir.x;
+		
 		dir = { 0,1 };
 		newY = y + 1;
-		if (keep_momentum)
-		{
-          newX = x +tempx;
-		  dir.x=tempx;
-		}
+		
 		
 		
 	}                                       

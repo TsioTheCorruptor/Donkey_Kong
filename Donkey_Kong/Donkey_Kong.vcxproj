@@ -129,7 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Barreles.cpp" />
     <ClCompile Include="board.cpp" />
-    <ClCompile Include="Donkey_Kong.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="gameManager.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="movement.cpp" />

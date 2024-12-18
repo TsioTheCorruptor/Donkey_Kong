@@ -14,8 +14,6 @@ class Pointmovement {
 	Direction dir{ 0, 0 }; // current direction: dir.x, dir.y
 	int x =9, y =3;
 	
-	bool keep_momentum_always =true;//allow movement in air,no matter what
-	bool keep_momentum = false;//allow for single iteration
 
 	 char movement_char=' ';
 	 char prev_char=' ';//char that the point passed trough
@@ -68,6 +66,7 @@ bool IsGrounded()
 	}
 	
 	void set_dir(int dirx, int diry,bool overwrite_grav)
+		//the overwrite_grav decides if the set dir will ignore gravity or not
 	{
 		dir.x = dirx;
 		dir.y = diry;
