@@ -1,5 +1,4 @@
-#include <cstring>
-#include <iostream>
+
 
 #include "gameManager.h"
 void Game::level_1()
@@ -98,13 +97,14 @@ ShowConsoleCursor(false);
 			player_point.move(player.GetCollisionArray(), player.GetCollisionArrayLength());
 			break;
 		}
+		//check collisions with barrels again
 		DamageTaken(player_point);
 		
           //erase char in last position,do it only while mario is moving to prevent flickering
 		if (!player_point.is_dir_0())
 			player_point.erase();
 		//check explosions and move barrels
-		for (auto it = barrel.begin(); it != barrel.end();) {//put in func
+		for (auto it = barrel.begin(); it != barrel.end();) {
 			it->checkAndMoveBarrel();
 			if (it->isExploding())
 			{
@@ -117,7 +117,7 @@ ShowConsoleCursor(false);
 					it = barrel.erase(it);
 			}
 			else
-			{
+			{//go to next barrel
 				it++;
 			}
 		}
@@ -129,7 +129,7 @@ ShowConsoleCursor(false);
 	}
 }
 
-void Game::main_game()
+void Game::main_game()//the entire game loop
 {
 	while (true)
 	{
@@ -142,9 +142,8 @@ void Game::main_game()
 		case reset:
 			currstate = level;
 			currhealth = health_per_reset;
-			 check_collision_dir = false;
-			 damage_collision_checkX = 0;
-			 damage_collision_checkY = 0;
+			
+			
 			break;
 		case game_over:
 			currstate=menu;
@@ -197,29 +196,7 @@ void Game:: DamageTaken(Pointmovement player_movement)
 		currhealth--;
 			break;
 		}
-		/*else
-		if (check_collision_dir)
-		{
-			char pointafterdir = pBoard.getChar(damage_collision_checkX, damage_collision_checkY);
-
-			if (pointafterdir == damagecollisions[i]||playerPoint==damagecollisions[i])
-			{
-				currhealth--;
-			}
-			check_collision_dir = false;
-			break;
-			
-		}
-		//in case a collision is detected in next direction,save the current player position,in next iteration 
-		//check if collision is detected at that position
-       if (playerPoint_withdir == damagecollisions[i]||player_movement.is_dir_0())
-		{
-			damage_collision_checkX = playerX;
-			damage_collision_checkY = playerY;
-			check_collision_dir = true;
-			break;
-		}
-		*/
+		
 	}
 
 	
@@ -236,6 +213,7 @@ void Game::PauseGame()
 {
 	char key;
 	while (pause_game == true)
+//be in this while loop until player wants to exit pause,when exiting pause continues the game normally
 	{
 
 		if (_kbhit())
@@ -245,7 +223,9 @@ void Game::PauseGame()
 			if (key == ESC)
 			{
 				pBoard.print();
+				PrintLives();
 				pause_game = false;
+				std::cout.flush();
 
 			}
 
@@ -253,7 +233,7 @@ void Game::PauseGame()
 	}
 }
    bool Game::HealthCheck()
-{
+{//if health got reduced to 0 or lives got reduced to 0,change the game state accordingly,return true to exit level loop
 	if (currhealth <= 0)
 		{
 		lives--;
@@ -278,7 +258,7 @@ void Game::PauseGame()
 	   while (inmenu==true)
 	   {
 		   if (_kbhit())
-		   {
+		   {//the menu options
 			   key = _getch();
 			   if (key == '1')
 			   {
@@ -291,7 +271,7 @@ void Game::PauseGame()
 				   currstate = exit_game;
 			   }
 			   if (key == '8')
-			   {
+			   {//print instructions only once per menu entry if required
 				   if (!printed_instructions)
 				    pBoard.printInstructions();
 				   printed_instructions = true;
@@ -303,7 +283,7 @@ void Game::PauseGame()
 	   }
    }
    void Game::ExplosionDamageTaken(int barrelx,int barrely, Pointmovement player_movement)
-   {
+   {//check distance between explosion and player,reduce health if player is in radius of explosion
 	   int playerx = player_movement.GetX();
 	   int playerY = player_movement.GetY();
 	   int dist_Y = abs(playerY - barrely);
@@ -316,7 +296,7 @@ void Game::PauseGame()
 	   }
    }
    bool Game::IsPaulineReached(Pointmovement player_movement)
-   {
+   {//check if olayer won the game(reached pauline),in that case return true to stop level loop
 	   int playerX = player_movement.GetX();
 	   int playerY = player_movement.GetY();
 	   char currchar = player_movement.GetCurrentBackgroundChar();

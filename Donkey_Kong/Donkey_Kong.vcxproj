@@ -131,7 +131,6 @@
     <ClCompile Include="board.cpp" />
     <ClCompile Include="Donkey_Kong.cpp" />
     <ClCompile Include="gameManager.cpp" />
-    <ClCompile Include="healthManager.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="movement.cpp" />
     <ClCompile Include="utils.cpp" />
@@ -140,7 +139,6 @@
     <ClInclude Include="Barreles.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="gameManager.h" />
-    <ClInclude Include="healthManager.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="utils.h" />

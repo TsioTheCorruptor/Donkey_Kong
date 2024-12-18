@@ -4,8 +4,7 @@
 
 #include "utils.h"
 #include "board.h"
-//#include "Mario.h"
-//#include "gameManager.h"
+
 class Pointmovement {
 	static constexpr char keys[] = {  'a', 'd', 's' };
 	static constexpr size_t numKeys = sizeof(keys) / sizeof(keys[0]);
@@ -14,24 +13,20 @@ class Pointmovement {
 	static constexpr Direction directions[] = {  {-1, 0}, {1, 0}, {0, 0} };
 	Direction dir{ 0, 0 }; // current direction: dir.x, dir.y
 	int x =9, y =3;
-	int prevx = 1, prevy = 1;
-	bool keep_momentum = false;
-	bool keep_momentum_always =false;
 	
+	bool keep_momentum_always =true;//allow movement in air,no matter what
+	bool keep_momentum = false;//allow for single iteration
+
 	 char movement_char=' ';
-	 char prev_char=' ';
-	 bool overwrite_gravity = true;
+	 char prev_char=' ';//char that the point passed trough
+	 bool overwrite_gravity = true;//ignore gravity
 	 bool Grounded = false;
 	 int iterations_in_air = 0;
 	 
 	Board* pBoard = nullptr;
 	
-	void draw(char c)  {//removed const
+	void draw(char c)const  {
 		pBoard->draw_InPosition(x, y, c);
-		//gotoxy(x, y);
-		//std::cout << c;
-
-		
 	}
 	
 	
@@ -41,31 +36,29 @@ public:
 	
 	
 	
-	
-	
-
 bool IsColliding(const char colliders[], int length,int xpos,int ypos);
 bool IsCollidingInNextDir(const char colliders[], int length) ;
 bool IsCollidingInGround(const char colliders[], int length);
+bool is_dir_0();
+void keyPressed(char key);
+void move(const char colliders[], int length);
+void SetPos(int posx, int posy);
+
+
 bool IsGrounded()
 {
 	return Grounded;
 }
-	void draw()
-	{//removed const
+	void draw()const
+	{
 		draw(movement_char);
 		
 	}
 	void erase() {
 		draw(' ');
 	}
-	void keyPressed(char key);
-	void move(const char colliders[], int length);
-	void SetPos(int posx, int posy);
-	void setBoard(Board& board) {
-		pBoard = &board;
-	}
-	void set_movement_char( char chr)
+	
+	void SetMovementChar(char chr)
 	{
 		movement_char = chr;
 	}
@@ -73,15 +66,12 @@ bool IsGrounded()
 	{
 		prev_char = chr;
 	}
-	bool is_dir_0();
+	
 	void set_dir(int dirx, int diry,bool overwrite_grav)
 	{
 		dir.x = dirx;
 		dir.y = diry;
-		if (overwrite_grav)
-			overwrite_gravity = true;
-		else
-			overwrite_gravity = false;
+		overwrite_gravity = overwrite_grav;
 	}
 	const int GetX() const
 	{

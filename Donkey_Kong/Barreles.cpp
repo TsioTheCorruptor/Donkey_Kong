@@ -28,7 +28,7 @@ void Barrel::checkAndMoveBarrel() {
 	}
 	else
 	{ //making sure that after an explosion,any background char will not be affected
-        barrel_movement.set_movement_char(pBoard->getOgChar(barrel_movement.GetX(),barrel_movement.GetY()));
+        barrel_movement.SetMovementChar(pBoard->getOgChar(barrel_movement.GetX(),barrel_movement.GetY()));
 		barrel_movement.draw();
 	}
 }
@@ -50,7 +50,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		if (lengthFallen >= 8) {
 			stop_movement = true;
 			set_barrel_char(explosion_char);
-			barrel_movement.set_movement_char(explosion_char);
+			barrel_movement.SetMovementChar(explosion_char);
 		}
 		lengthFallen = 0;
 		
@@ -63,7 +63,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		if (lengthFallen >= 8) {
 			stop_movement = true;
 			set_barrel_char(explosion_char);
-			barrel_movement.set_movement_char(explosion_char);
+			barrel_movement.SetMovementChar(explosion_char);
 		}
 		lengthFallen = 0;
 	}
@@ -82,7 +82,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		if (lengthFallen >= 8) {
 			stop_movement = true;
 			set_barrel_char(explosion_char);
-			barrel_movement.set_movement_char(explosion_char);
+			barrel_movement.SetMovementChar(explosion_char);
 		}
 		lengthFallen = 0;
 		
@@ -91,11 +91,11 @@ void Barrel::getBarrelDir(const char colliders[]) {
 	else  {
 		lengthFallen++;
 	}
-	
+	//if barrel hits wall,it explodes
 	if (colliders[wall] == leftchar || colliders[wall] == rightchar) {
 		stop_movement = true;
 		set_barrel_char(explosion_char);
-		barrel_movement.set_movement_char(explosion_char);
+		barrel_movement.SetMovementChar(explosion_char);
 	}
 }
 

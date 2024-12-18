@@ -10,8 +10,10 @@ class Barrel {
 	 static constexpr char explosion_char = '*';
 	 Pointmovement barrel_movement;
 	 Board* pBoard = nullptr;
+	 //direction in previous floor
 	int prev_dirX=0;
 	int prev_dirY=0;
+	//start position
     int start_posX=0 ;
     int start_posY=0;
 	int lengthFallen=0;
@@ -21,18 +23,20 @@ class Barrel {
 	enum coll_hit{player,wall,floor_left,neutral_floor,floor_right };//order has to stay
 
    static constexpr  int col_length = 5;
+   //iterations from explosion start to explosion end
    static constexpr int explode_delay = 2;
+   int explode_stage = 0;
      bool explosion_started=false;
 	 bool explosion_ended = false;
 	
-	 int explode_stage = 0;
-	 bool stop_movement = false;
+	 
+	 bool stop_movement = false;//stop barrel movement
  public:
 	
 	 Barrel(  Pointmovement point, Board& board) :
 		 barrel_movement(point), pBoard(&board) {}
 
-	//Barrel() : prev_dirX(0), prev_dirY(0), lengthFallen(0), exploded(false) {}
+	
 
 	
 

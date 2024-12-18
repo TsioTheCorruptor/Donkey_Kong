@@ -5,7 +5,6 @@
 
 class Mario {
 
-
  char mario_char = '@';
  char ladder_char ='H';
  static constexpr char upkey = 'w';
@@ -14,7 +13,7 @@ class Mario {
  bool go_below_ground = false;
  
  int move_stage = 0;
-
+ //jump directions
  static constexpr Jump_InOrder jump_inorder_right[] = { {0, -1}, {1, -1},{1,0},{1,1}, {0,1} };
  static constexpr int move_count_right = 5;
 
@@ -25,18 +24,20 @@ class Mario {
  static constexpr int move_count_neutral = 2;
 
                  bool isjumping = false;
-                 bool ladder_up = true;
+                 bool ladder_up = true;//going up or down ladder
        Pointmovement* player_movement = nullptr;
                Board* board = nullptr;
-                  int savedirX = 0;
-                  int savedirY = 0;
- static constexpr char collisions[4] = { 'Q','<','=','>'};
-  static constexpr int col_length = 4;
+			   //save dir for after jump
+			   int savedirX = 0;
+               int savedirY = 0;
+
+ static constexpr char collisions[4] = { 'Q','<','=','>'};//mario collisions
+ static constexpr int col_length = 4;
 public:
 	
 	
 
-enum move_type {no_moves,jumping,ladder};
+enum move_type {no_moves,jumping,ladder};//mario states
 	move_type curr_move = no_moves;
 
 	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard ) : 

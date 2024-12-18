@@ -1,11 +1,11 @@
-#include <cstring>
-#include <iostream>
-
 #include "Board.h"
-#include "healthManager.h"
+
+
+
+
 
 void Board::reset() {
-	//int i is just to check, not final
+	
 	
 
 		for (int i = 0; i < MAX_Y; i++) {
@@ -20,7 +20,7 @@ void Board::print() const {
 		std::cout << currentBoard[i] << '\n';
 	}
 	std::cout << currentBoard[MAX_Y - 1];
-	//pHealth->printHealth();
+	
 }
 void Board::printPause()const 
 {
