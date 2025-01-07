@@ -4,6 +4,7 @@
 #include "movement.h"
 #include "Mario.h"
 #include "Barreles.h"
+#include "Ghost.h"
 
 
 #include <cstring>
@@ -20,6 +21,7 @@ class Game {
 	static constexpr char pauline_char = '$';
 	static constexpr char ladder_char = 'H';
 	static constexpr char barrel_char = 'O';
+	static constexpr char ghost_char = 'x';
 
 	static constexpr int ESC = 27;
 	//game parameters
@@ -45,10 +47,11 @@ class Game {
 	 int currstate = menu;
 	 Board pBoard ;
 	 std::vector <Barrel> barrel;
+	 std::vector <Ghost> ghost;
 	
 	
-	static constexpr char damagecollisions[] = { 'O'};
-	static const int col_length = 1;
+	static constexpr char damagecollisions[] = { 'O', 'x'};
+	static const int col_length = 2;
 public:
 	
     
@@ -61,6 +64,8 @@ public:
     void PrintLives();
 	void SetupLevel();
 	void MoveBarrels(Pointmovement player_movement);
+	void MoveGhosts();
+	void checkGhostsColliding();
 	void DamageTaken(Pointmovement player_movement);
 	void FallDamageTaken(Pointmovement player_movement);
 	void ExplosionDamageTaken(int barrelx, int barrely, Pointmovement player_movement);

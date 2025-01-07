@@ -3,6 +3,7 @@
 #include "gameManager.h"
 void Game::level_1()
 {
+	
 ShowConsoleCursor(false);
 	//each reset,before the game loop
 SetupLevel();
@@ -14,6 +15,10 @@ int barrel_startY = 3;
 	Pointmovement player_point(player_char,player_startX,player_startY,pBoard);
 	player_point.set_dir(0, 0,false);
 	Mario player(player_char,ladder_char,player_point,pBoard);
+
+	ghost.emplace_back(Ghost(ghost_char, 34, 23, pBoard, pBoard));
+	ghost.emplace_back(Ghost(ghost_char, 33, 19, pBoard, pBoard));
+	ghost.emplace_back(Ghost(ghost_char, 39, 19, pBoard, pBoard));
 	
 	//each reset,before the game loop
 
@@ -33,6 +38,11 @@ int barrel_startY = 3;
 		{
          it->DrawBarrel();
 		 it++;
+		}
+		//for each ghost,draw it
+		for (auto it = ghost.begin(); it != ghost.end();) {
+			it->draw();
+			it++;
 		}
 		//check for fall damage and collision damage with barrels,draw player after checking collisions
 		DamageTaken(player_point);
@@ -62,11 +72,15 @@ int barrel_startY = 3;
 		player.DoMarioMoves(key);
 		//check collisions with barrels again
 		DamageTaken(player_point);
+		//check ghosts coliding
+		checkGhostsColliding();
           //erase char in last position,do it only while mario is moving to prevent flickering
 		if (!player_point.is_dir_0())
 			player_point.erase();
         //check explosions and move barrels
 		MoveBarrels(player_point);
+		//move the ghosts
+		MoveGhosts();
 		
 	
 		curr_barrel_waitTime++;	
@@ -75,6 +89,7 @@ int barrel_startY = 3;
 
 void Game::main_game()//the entire game loop
 {
+	std::srand(std::time(0));
 	while (true)
 	{
 		switch (currstate)
@@ -259,6 +274,7 @@ void Game::PauseGame()
    void Game::SetupLevel()
    {
 	   barrel.clear();
+	   ghost.clear();
 	   pBoard.reset();
 	   pBoard.print();
 	   PrintLives();
@@ -283,5 +299,21 @@ void Game::PauseGame()
 			   it++;
 		   }
 	   }
+   }
+
+   void Game::checkGhostsColliding() {
+	   for (int i = 0; i < ghost.size(); ++i) {
+		   ghost[i].ghostCollision();
+	   }
+   }
+
+   void Game::MoveGhosts() {
+	   for (int i = 0; i < ghost.size(); ++i) {
+		   ghost[i].checkAndMoveGhost();
+	   }
+	   //DOESNT WORK FOR SOME REASON
+	   /*for (auto it = ghost.begin(); it != ghost.end();) {
+		   it->checkAndMoveGhost();
+	   }*/
    }
 
