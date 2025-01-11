@@ -14,15 +14,16 @@ void Ghost::changeGhostsAligning(const char colliders[]) {
 	//These chars are for if a barrel hits a wall or a ledge
 	char leftchar2 = pBoard->getChar(GetX() + 1, GetY());
 	char rightchar2 = pBoard->getChar(GetX() - 1, GetY());
+
 	int newDirX = GetDirX() * -1;
-	//Chcek for ghosts on the left
+	//Check for ghosts on the left
 	if (GetDirX() == 1) {
-		if (colliders[ghost] == leftchar || colliders[ghost] == leftchar2||colliders[mm] == leftchar || colliders[mm] == leftchar2 || colliders[ll] == leftchar || colliders[ll] == leftchar2)
+		if (colliders[ghost] == leftchar || colliders[ghost] == leftchar2)
 			set_dir(newDirX, 0, false);
 	}
-	//Chcek for ghosts on the right
+	//Check for ghosts on the right
 	else {
-		if (colliders[ghost] == rightchar || colliders[ghost] == rightchar2 || colliders[mm] == rightchar || colliders[mm] == rightchar2 || colliders[ll] == rightchar || colliders[ll] == rightchar2) {
+		if (colliders[ghost] == rightchar || colliders[ghost] == rightchar2) {
 			set_dir(newDirX, 0, false);
 		}
 	}
@@ -30,52 +31,60 @@ void Ghost::changeGhostsAligning(const char colliders[]) {
 void Ghost::getGhostDir(const char colliders[]) {
 
 	//Get the relevent chars for ghost collision detection
-	char floorchar = pBoard->getChar(GetX(), GetY() + 1);
 	char leftchar = pBoard->getChar(GetX() + 1, GetY());
 	char rightchar = pBoard->getChar(GetX() - 1, GetY());
 	char leftedge = pBoard->getChar(GetX() + 1, GetY() + 1);
 	char rightedge = pBoard->getChar(GetX() - 1, GetY() + 1);
 
-	//Enter this if only if it is a new ghost
-	if (isSpanwed()) {
-		//If there is a floor below the ghost, make it move right and activate it,
-		//else, it will fall until reaching a floor
-		if (colliders[floor_left] == floorchar || colliders[neutral_floor] == floorchar || colliders[floor_right] == floorchar) {
-			set_dir(1, 0, false);
-			setSpawned(false);
-		}
-	}
+	//Get an array of colliders for easier checks
+	const char objectCol[] = { colliders[wall], colliders[ghost] };
+	int objectColLen = 2;
 
 	//If the direction is 0, make the ghost move right, then begin checking the other collisions
 	if (GetDirX() == 0) {
 		set_dir(1, 0, false);
 	}
 
-	//Define a new changed direction
+	//Enter this if only if it is a new ghost
+	if (isSpawned()) {
+		//If there is a floor below the ghost, make it move right and activate it,
+		//else, it will fall until reaching a floor
+		if (IsGrounded()) {
+			set_dir(1, 0, false);
+			setSpawned(false);
+		}
+	}
+	                                                        
+	//Define a new changed direction                        
 	int newDirX = GetDirX() * -1;
 
 	//Speacial case where the ghost cant move and thus stays still
-	if ((leftedge == ' ' || leftchar == colliders[wall] || leftchar == colliders[ghost]) && (rightedge == ' ' || rightchar == colliders[wall] || rightchar == colliders[ghost])) {
+	if ((IsCollidingGhostClass(objectCol, objectColLen, GetX() + 1, GetY()) || (leftedge == ' ')) && (IsCollidingGhostClass(objectCol, objectColLen, GetX() - 1, GetY()) || (rightedge == ' '))) {
 		set_dir(0, 0, false);
 	}
-	//If there is a ledge, change dir
-	else if (leftedge == ' ' || rightedge == ' ') {
-		set_dir(newDirX, 0, false);
-	}
-	//If there is a wall, change dir
-	else if (colliders[wall] == leftchar || colliders[wall] == rightchar) {
-		set_dir(newDirX, 0, false);
-	}
-
-	//If none of the above happened, and the ghost is on floor, randomize its next direction
-	else if (colliders[floor_left] == floorchar || colliders[neutral_floor] == floorchar || colliders[floor_right] == floorchar ){
-		int chanceToChangeDir = std::rand() % 100;
-		if (chanceToChangeDir > 95) {
-			//THIS IS NOT GOOD, NEED SET_X AND SET_Y (MAYBE NOT IN EXERCISE 3)
+	
+	//If the ghost moves left
+	else if (GetDirX() == -1) {
+		//If there is a ledge or a wall change dir
+		if (rightedge == ' ' || colliders[wall] == rightchar) {
 			set_dir(newDirX, 0, false);
 		}
 	}
-
+	//If the ghost moves right
+	else if (GetDirX() == 1) {
+		//If there is a ledge or a wall change dir
+		if (leftedge == ' ' || colliders[wall] == leftchar) {
+			set_dir(newDirX, 0, false);
+		}
+	}
+	
+	//If none of the above happened, and the ghost is on floor, randomize its next direction
+	else if (IsGrounded() && GetDirX() != 0) {
+		int chanceToChangeDir = std::rand() % 100;
+		if (chanceToChangeDir > 95) {
+			set_dir(newDirX, 0, false);
+		}
+	}
 }
 
 //This function checks the condition of the ghosts and prints them accordingly
@@ -87,4 +96,14 @@ void Ghost::checkAndMoveGhost() {
 	}
 	getGhostDir(collisions);
 	move(collisions, col_length);
+}
+
+bool Ghost::IsCollidingGhostClass(const char colliders[], const int length, int Xpos, int Ypos){
+
+	char toCheck = pBoard->getChar(Xpos, Ypos);
+	for (int i = 0; i < length; i++){
+		if (toCheck == colliders[i])
+			return true;
+	}
+	return false;
 }

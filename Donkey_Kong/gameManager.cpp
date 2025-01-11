@@ -452,7 +452,7 @@ bool Game::getBoardData()
 	 for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++)
 	 {
 		 StartCoord ghostPos = ghostStart[i];
-		 ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard, pBoard));
+		 ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard));
 	 }
  }
  void Game::getLevelInput()

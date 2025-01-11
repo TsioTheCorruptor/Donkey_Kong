@@ -7,16 +7,17 @@
 
 class Ghost : public Pointmovement {
 
+	
 	char ghost_char = 'x';
 	Board* pBoard = nullptr;
 	bool spawned = true;
 	static constexpr char collisions[] = { '@','Q','<','=','>','x','l','m'};
 	static constexpr  int col_length = 6;
 	enum coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost,mm,ll };//order has to stay
+	
 
 public:
-
-	Ghost(const char move_char, int posx, int posy, Board& board, Board& board2) :
+	Ghost(const char move_char, int posx, int posy, Board& board) :
 		Pointmovement(move_char, posx, posy, board), pBoard(&board) {}
 
 	void checkAndMoveGhost();
@@ -35,12 +36,14 @@ public:
 		spawned = set;
 	}
 
-	bool isSpanwed() const {
+	bool isSpawned() const {
 		return spawned;
 	}
 
 	void ghostCollision();
 
 	void changeGhostsAligning(const char colliders[]);
+
+	bool IsCollidingGhostClass(const char colliders[], int length, int xpos, int ypos);
 
 };
