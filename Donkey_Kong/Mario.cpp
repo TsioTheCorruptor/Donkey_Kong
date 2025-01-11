@@ -132,3 +132,11 @@ void Mario::DoMarioMoves(int key)
 		break;
 	}
 }
+void Mario::keyPressed(char key) {//set movement dir according to key pressed
+	for (size_t i = 0; i < numKeys; i++) {
+		if (std::tolower(key) == keys[i]) {
+			player_movement->set_dir(directions[i].x,directions[i].y,false);
+			return;
+		}
+	}
+}

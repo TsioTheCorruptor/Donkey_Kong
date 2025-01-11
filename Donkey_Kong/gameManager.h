@@ -12,17 +12,23 @@
 #include <windows.h>
 #include <conio.h>
 #include <vector>
-
-
+#include <fstream>
+#include <filesystem>
+#include <string>
 
 class Game {
 	//const chars
-    static constexpr char player_char = '@';
-	static constexpr char pauline_char = '$';
-	static constexpr char ladder_char = 'H';
-	static constexpr char barrel_char = 'O';
-	static constexpr char ghost_char = 'x';
+	struct StartCoord { int x=10, y=22; }; // inner private struct
+	static constexpr int PcharCount = 6;
+	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L'};
+	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char };
+	StartCoord playerStart,barrelStart,paulineCoord;
+	std::vector <StartCoord> ghostStart;
 
+	char PCharsAmount[PcharCount] = {};
+	
+	
+	
 	static constexpr int ESC = 27;
 	//game parameters
 	const int max_lives = 3;
@@ -31,6 +37,7 @@ class Game {
 	      int currhealth = health_per_reset;
 		  int falldamage_height = 5;
 		  int explosion_damage_radius = 2;
+		 
 
 	bool newGame = true;
     bool pause_game = false;
@@ -43,11 +50,16 @@ class Game {
 	//screen time of specific boards
 	int GO_screentime = 2000;
 	int Victory_screentime =4000;
-	 enum  gameState{menu,level,reset,game_over,victory,exit_game,instructions};//game states
-	 int currstate = menu;
+	 enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors};//game states
+	 gameState currstate =gameState:: menu;
+	 int currLevel = 0;
 	 Board pBoard ;
+	 enum class errorType{not_found,bad_board,general};
+	 errorType currError = errorType::general;
 	 std::vector <Barrel> barrel;
 	 std::vector <Ghost> ghost;
+	 std::vector<std::string> boardfileNames;
+	 int fileamount = 0;
 	
 	
 	static constexpr char damagecollisions[] = { 'O', 'x'};
@@ -62,7 +74,11 @@ public:
 	bool HealthCheck();
 	void inMenu();
     void PrintLives();
-	void SetupLevel();
+	void ResetLevel();
+	void resetGhosts();
+	void printErrors();
+	void getLevelInput();
+	void LevelSelect();
 	void MoveBarrels(Pointmovement player_movement);
 	void MoveGhosts();
 	void checkGhostsColliding();
@@ -70,7 +86,8 @@ public:
 	void FallDamageTaken(Pointmovement player_movement);
 	void ExplosionDamageTaken(int barrelx, int barrely, Pointmovement player_movement);
 	bool IsPaulineReached(Pointmovement player_movement);
-
+	void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
+	bool getBoardData();
 
 	
 	

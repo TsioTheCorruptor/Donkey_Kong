@@ -17,12 +17,12 @@ void Ghost::changeGhostsAligning(const char colliders[]) {
 	int newDirX = GetDirX() * -1;
 	//Chcek for ghosts on the left
 	if (GetDirX() == 1) {
-		if (colliders[ghost] == leftchar || colliders[ghost] == leftchar2)
+		if (colliders[ghost] == leftchar || colliders[ghost] == leftchar2||colliders[mm] == leftchar || colliders[mm] == leftchar2 || colliders[ll] == leftchar || colliders[ll] == leftchar2)
 			set_dir(newDirX, 0, false);
 	}
 	//Chcek for ghosts on the right
 	else {
-		if (colliders[ghost] == rightchar || colliders[ghost] == rightchar2) {
+		if (colliders[ghost] == rightchar || colliders[ghost] == rightchar2 || colliders[mm] == rightchar || colliders[mm] == rightchar2 || colliders[ll] == rightchar || colliders[ll] == rightchar2) {
 			set_dir(newDirX, 0, false);
 		}
 	}
@@ -46,6 +46,11 @@ void Ghost::getGhostDir(const char colliders[]) {
 		}
 	}
 
+	//If the direction is 0, make the ghost move right, then begin checking the other collisions
+	if (GetDirX() == 0) {
+		set_dir(1, 0, false);
+	}
+
 	//Define a new changed direction
 	int newDirX = GetDirX() * -1;
 
@@ -63,7 +68,7 @@ void Ghost::getGhostDir(const char colliders[]) {
 	}
 
 	//If none of the above happened, and the ghost is on floor, randomize its next direction
-	else if (colliders[floor_left] == floorchar || colliders[neutral_floor] == floorchar || colliders[floor_right] == floorchar) {
+	else if (colliders[floor_left] == floorchar || colliders[neutral_floor] == floorchar || colliders[floor_right] == floorchar ){
 		int chanceToChangeDir = std::rand() % 100;
 		if (chanceToChangeDir > 95) {
 			//THIS IS NOT GOOD, NEED SET_X AND SET_Y (MAYBE NOT IN EXERCISE 3)

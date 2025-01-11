@@ -6,27 +6,22 @@ void Game::level_1()
 	
 ShowConsoleCursor(false);
 	//each reset,before the game loop
-SetupLevel();
+//ResetLevel();
 //set starting point for mario and barrels
-int player_startX = 12;
-int player_startY = 23;
-int barrel_startX = 9;
-int barrel_startY = 3;
-	Pointmovement player_point(player_char,player_startX,player_startY,pBoard);
-	player_point.set_dir(0, 0,false);
-	Mario player(player_char,ladder_char,player_point,pBoard);
 
-	ghost.emplace_back(Ghost(ghost_char, 34, 23, pBoard, pBoard));
-	ghost.emplace_back(Ghost(ghost_char, 33, 19, pBoard, pBoard));
-	ghost.emplace_back(Ghost(ghost_char, 39, 19, pBoard, pBoard));
+	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
+	player_point.set_dir(0, 0,false);
+	Mario player(PlayableChars[int(PlayableChar::player_char)], PlayableChars[int(PlayableChar::ladder_char)],player_point,pBoard);
+
+	
 	
 	//each reset,before the game loop
 
 	while (true) {
 		
 		//Every "barrel_waitTime" iterations create a new barrel 
-		if (curr_barrel_waitTime >=barrel_waitTime  ) {
-			barrel.emplace_back( Pointmovement(barrel_char, barrel_startX, barrel_startY, pBoard), pBoard);
+		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
+			barrel.emplace_back( Pointmovement(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard), pBoard);
 			curr_barrel_waitTime = 0;
 		}
 //in this part of the loop,we print the moving objects according to their positions
@@ -63,11 +58,11 @@ int barrel_startY = 3;
 				pBoard.printPause();
 				pause_game = true;
 			}
-			player_point.keyPressed(key);
+			player.keyPressed(key);
 			PauseGame();
 		}
 		//delay per iteration(may be specific per level)
-		Sleep(80);
+		Sleep(100);
 		//check according to player input which move mario will do
 		player.DoMarioMoves(key);
 		//check collisions with barrels again
@@ -89,49 +84,66 @@ int barrel_startY = 3;
 
 void Game::main_game()//the entire game loop
 {
+	getAllBoardFileNames(boardfileNames);
 	std::srand(std::time(0));
 	while (true)
 	{
-		switch (currstate)
+		switch (int(currstate))
 		{
-		case level:
-			level_1();
-			break;
+			case int(gameState::level) :
+				level_1();
+				break;
+				case int(gameState::level_select) :
+					
+					
+					LevelSelect();
+					
+					break;
+					case int(gameState::manage_errors) :
+						pBoard.printEmpty();
+						printErrors();
+						break;
+						case int(gameState::reset) :
+							currstate = gameState::level;
+							currhealth = health_per_reset;
+							ResetLevel();
 
-		case reset:
-			currstate = level;
-			currhealth = health_per_reset;
-			
-			
-			break;
-		case game_over:
-			currstate=menu;
-			lives = max_lives;
-			pBoard.printGameOver();
-			Sleep(GO_screentime);
-			break;
-		case menu:
-			pBoard.printMenu();
-			inMenu();
-			currhealth = health_per_reset;
-			
-			break;
-		case victory:
-			currstate = menu;
-			lives = max_lives;
-			pBoard.printVictory();
-			Sleep(Victory_screentime);
-			break;
-		case exit_game:
-			return;
-			break;
-		case instructions:
-			pBoard.printInstructions();
+							break;
+							case int(gameState::game_over) :
+								currstate = gameState::menu;
+								lives = max_lives;
+								pBoard.printGameOver();
+								Sleep(GO_screentime);
+								break;
+								case int(gameState::menu) :
 
-			break;
+									pBoard.printMenu();
+									inMenu();
+									currhealth = health_per_reset;
+									break;
+									case int(gameState::victory) :
+										if (currLevel >= fileamount-1) {
+									    currstate = gameState::menu;
+										lives = max_lives;
+										pBoard.printVictory();
+										Sleep(Victory_screentime);
 
-        }
-		
+
+										}
+										else {
+											currLevel++;
+											currstate = gameState::level_select;
+										}
+										
+										
+										break;
+										case int(gameState::exit_game) :
+											return;
+											break;
+											case int(gameState::instructions) :
+												pBoard.printInstructions();
+												break;
+		}
 	}
 	
 }
@@ -144,7 +156,7 @@ void Game:: DamageTaken(Pointmovement player_movement)
 	int playerX = player_movement.GetX();
 	int playerY = player_movement.GetY();
 	char playerPoint = pBoard.getChar(playerX, playerY);
-	//char playerPoint_withdir = pBoard.getChar(playerX+player_movement.GetDirX(), playerY+player_movement.GetDirY());
+	
 	
     
 	for (int i = 0; i < col_length; i++)
@@ -155,7 +167,6 @@ void Game:: DamageTaken(Pointmovement player_movement)
 		currhealth--;
 			break;
 		}
-		
 	}
 
 	
@@ -191,20 +202,21 @@ void Game::PauseGame()
 		}
 	}
 }
-   bool Game::HealthCheck()
+
+bool Game::HealthCheck()
 {//if health got reduced to 0 or lives got reduced to 0,change the game state accordingly,return true to exit level loop
 	if (currhealth <= 0)
 		{
 		lives--;
 		if (lives >= 0)
 		{
-        currstate = reset;
+        currstate = gameState::reset;
 		return true;
 		}	
 		}
 	if(lives<=0)
 		{
-			currstate = game_over;
+			currstate = gameState::game_over;
 			return true;
 		}     
 	return false;
@@ -222,12 +234,13 @@ void Game::PauseGame()
 			   if (key == '1')
 			   {
 				   inmenu = false;
-				   currstate = reset;
+				   getLevelInput();
+				   currstate = gameState::level_select;
 			   }
 			   if (key == '9')
 			   {
 				   inmenu = false;
-				   currstate = exit_game;
+				   currstate = gameState::exit_game;
 			   }
 			   if (key == '8')
 			   {//print instructions only once per menu entry if required
@@ -259,9 +272,9 @@ void Game::PauseGame()
 	   int playerX = player_movement.GetX();
 	   int playerY = player_movement.GetY();
 	   char currchar = player_movement.GetCurrentBackgroundChar();
-	   if (currchar == pauline_char)
+	   if (currchar == PlayableChars[int(PlayableChar::pauline_char)])
 	   {
-		   currstate = victory;
+		   currstate = gameState::victory;
 		   return true;
 	   }
 	   return false;
@@ -271,11 +284,19 @@ void Game::PauseGame()
 	   gotoxy(health_displayX, health_displayY);
 	   std::cout << lives;
    }
-   void Game::SetupLevel()
+   void Game::ResetLevel()
    {
+	  // memset(PCharsAmount, 0, sizeof(PCharsAmount));
 	   barrel.clear();
-	   ghost.clear();
+	   
+	   //getBoardData();
+	   resetGhosts();
+	   
+	  
+	   
 	   pBoard.reset();
+	  
+
 	   pBoard.print();
 	   PrintLives();
 	  
@@ -308,6 +329,7 @@ void Game::PauseGame()
    }
 
    void Game::MoveGhosts() {
+  
 	   for (int i = 0; i < ghost.size(); ++i) {
 		   ghost[i].checkAndMoveGhost();
 	   }
@@ -316,4 +338,170 @@ void Game::PauseGame()
 		   it->checkAndMoveGhost();
 	   }*/
    }
+  
+	  
+void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
+		   namespace fs = std::filesystem;
+		   for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+			   auto filename = entry.path().filename();
+			   auto filenameStr = filename.string();
+			   if (filenameStr.substr(0, 5) == "dkong" && filename.extension() == ".screen") {
+				   std::cout << " ^ added!!\n";
+				   vec_to_fill.push_back(filenameStr);
+			   }
+		   }
+	   
+		   if (vec_to_fill.empty()) {
+			   std::cout << "No matching board files found in the current directory." << std::endl;
+		   }
+		   fileamount = boardfileNames.size();
+	   }
+bool Game::getBoardData()
+{
+	memset(PCharsAmount, 0, sizeof(PCharsAmount));
+	StartCoord currcoord;
+	char chr = ' ';
+	//char PCharsAmount[PcharCount] = {};
+	for (int row = 0; row < 25; row++)//chnge magic numbers
+	{
+		for (int col = 0; col < 80; col++)
+		{
+			currcoord = { col,row };
+			chr = pBoard.getOgChar(col,row );
+			switch (chr)
+			{
+			case PlayableChars[ int(PlayableChar::player_char)] :
+				
+				if (PCharsAmount[int(PlayableChar::player_char)] < 1)
+					playerStart = currcoord;
+				
+				pBoard.setChar(col,row , ' '); 
+				pBoard.setOgChar(col,row , ' '); 
+					PCharsAmount[int(PlayableChar::player_char)]++;
+				   
+				
+
+				break;
+			case PlayableChars[int(PlayableChar::dk_char)]:
+				
+				if (PCharsAmount[int(PlayableChar::dk_char)] < 1)
+					barrelStart = currcoord;
+				else
+				{
+					pBoard.setChar(col,row , ' ');
+					pBoard.setOgChar(col,row , ' ');
+				}
+					
+                PCharsAmount[int(PlayableChar::dk_char)]++;
+				break;
+			case PlayableChars[int(PlayableChar::ghost_char)]:
+				PCharsAmount[int(PlayableChar::ghost_char)]++;
+				//ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], col, row, pBoard, pBoard));
+				ghostStart.emplace_back(currcoord);
+				pBoard.setChar(col, row, ' ');
+				pBoard.setOgChar(col, row, ' ');
+				break;
+			case PlayableChars[int(PlayableChar::pauline_char)]:
+				
+				if (PCharsAmount[int(PlayableChar::pauline_char)] < 1)
+					paulineCoord = currcoord;
+				else {
+					pBoard.setChar(col, row, ' ');
+					pBoard.setOgChar(col, row, ' ');
+
+				}
+
+				PCharsAmount[int(PlayableChar::pauline_char)]++;
+					
+
+				break;
+			}
+		}
+	}
+	if (PCharsAmount[int(PlayableChar::player_char)] == 0 || PCharsAmount[int(PlayableChar::pauline_char)] == 0)
+		return false;
+		return true;
+
+ }
+ void Game::printErrors()
+	{
+	 gotoxy(0, 0);
+	 switch (int(currError))
+	 {
+		 case int(errorType::not_found) :
+			 std::cout << "error loading level!,returning to menu";
+			 currstate = gameState::menu;
+			 Sleep(2000);
+			 break;
+			 case int(errorType::bad_board) :
+				 std::cout << "necessary level elements missing!,returning to menu";
+				 currstate = gameState::menu;
+				 Sleep(2000);
+				 break;
+				 case int(errorType::general) :
+					 std::cout << "error!,returning to menu";
+					 currstate = gameState::menu;
+					 Sleep(2000);
+					 break;
+	 }
+	}  
+ void Game::resetGhosts()
+ {
+	 ghost.clear();
+	 int k = PCharsAmount[int(PlayableChar::ghost_char)];
+	 for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++)
+	 {
+		 StartCoord ghostPos = ghostStart[i];
+		 ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard, pBoard));
+	 }
+ }
+ void Game::getLevelInput()
+ {
+	  pBoard.printEmpty();
+	 gotoxy(0, 0);
+	
+	  fileamount = boardfileNames.size();
+	 if (fileamount > 0) {
+for (int i = 0; i <fileamount ; i++)
+		 std::cout << boardfileNames[i]<<"  ->press"<<i+1<<'\n';
+	 while (true)
+	 {
+		 if (_kbhit())
+		 {
+			char key = _getch();
+			if (key - '0' >= 1 && key - '0' <= fileamount)
+			{
+				currLevel = key - '0'-1;
+				break;
+			}
+		 }
+	 }
+	 }
+	 else {
+		 std::cout << "no levels found!";
+		 Sleep(2000);
+	 } 
+ }
+ void Game::LevelSelect()
+ {
+	 if (fileamount > 0) {
+		 if (!pBoard.load(boardfileNames[currLevel])) {
+			 currError = errorType::not_found;
+			 currstate = gameState::manage_errors;
+		 }
+		 else
+		 {
+			 if (!getBoardData()) {
+				 currError = errorType::bad_board;
+				 currstate = gameState::manage_errors;
+			 }
+			 else
+				 currstate = gameState::reset;
+		 }
+	 }
+	 else
+	 {
+		 currstate = gameState::menu;
+	 }
+ }
 

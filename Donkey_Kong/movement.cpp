@@ -1,13 +1,6 @@
 #include "movement.h"
 
-void Pointmovement::keyPressed(char key) {//set movement dir according to key pressed
-	for (size_t i = 0; i < numKeys; i++) {
-		if (std::tolower(key) == keys[i]) {
-			dir = directions[i];
-			return;
-		}
-	}
-}
+
 
 void Pointmovement::move(const char colliders[],const int length) {
 	bool IsGrounded = IsCollidingInGround(colliders,length);
@@ -71,13 +64,16 @@ void Pointmovement::move(const char colliders[],const int length) {
 bool Pointmovement::IsColliding(const char colliders[], const int length ,int Xpos, int Ypos)
 {//check collision in specific board location
 	char toCheck = pBoard->getOgChar(Xpos, Ypos);
-	
+	//if (x + dir.x >= 80 || x + dir.x <0 || y + dir.y >= 25 || y + dir.y < 0)
+		//return true;
+
 	for (int i = 0; i < length; i++)
 	{
 		
 		if (toCheck == colliders[i])
 		return true;
 	}
+	
 	return false;
 }
 bool Pointmovement::IsCollidingInNextDir(const char colliders[], const int length) 

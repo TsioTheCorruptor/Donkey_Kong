@@ -30,11 +30,19 @@ class Mario {
 			   //save dir for after jump
 			   int savedirX = 0;
                int savedirY = 0;
+			   static constexpr char keys[] = { 'a', 'd', 's' };
+			  
+			   static constexpr size_t numKeys = sizeof(keys) / sizeof(keys[0]);
+			   struct Direction { int x, y; }; // inner private struct
+			   static constexpr Direction directions[] = { {-1, 0}, {1, 0}, {0, 0} };
+
+			   // the directions array order is exactly the same as the keys array - must keep it that way
 
  static constexpr char collisions[4] = { 'Q','<','=','>'};//mario collisions
  static constexpr int col_length = 4;
 enum move_type {no_moves,jumping,ladder};//mario states
 	move_type curr_move = no_moves;
+
 public:
 	
 	
@@ -48,6 +56,8 @@ public:
 	void Jump();
 	void InLadder();
 	void DoMarioMoves(int key);
+	void keyPressed(char key);
+	
     void Jump_InDirection(const Jump_InOrder* order, int length,int currdirx,int currdiey);
 	const int GetSavedDirX()const { return savedirX; }
 	const int GetSavedDirY()const { return savedirY; }

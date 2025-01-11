@@ -6,10 +6,7 @@
 #include "board.h"
 
 class Pointmovement {
-	static constexpr char keys[] = {  'a', 'd', 's' };
-	static constexpr size_t numKeys = sizeof(keys) / sizeof(keys[0]);
 	struct Direction { int x, y; }; // inner private struct
-	// the directions array order is exactly the same as the keys array - must keep it that way
 	static constexpr Direction directions[] = {  {-1, 0}, {1, 0}, {0, 0} };
 	Direction dir{ 0, 0 }; // current direction: dir.x, dir.y
 	int x =9, y =3;
@@ -38,7 +35,7 @@ bool IsColliding(const char colliders[], int length,int xpos,int ypos);
 bool IsCollidingInNextDir(const char colliders[], int length) ;
 bool IsCollidingInGround(const char colliders[], int length);
 bool is_dir_0();
-void keyPressed(char key);
+//void keyPressed(char key);
 void move(const char colliders[], int length);
 void SetPos(int posx, int posy);
 

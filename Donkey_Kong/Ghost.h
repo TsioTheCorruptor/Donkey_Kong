@@ -10,9 +10,9 @@ class Ghost : public Pointmovement {
 	char ghost_char = 'x';
 	Board* pBoard = nullptr;
 	bool spawned = true;
-	static constexpr char collisions[] = { '@','Q','<','=','>','x' };
+	static constexpr char collisions[] = { '@','Q','<','=','>','x','l','m'};
 	static constexpr  int col_length = 6;
-	enum coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost };//order has to stay
+	enum coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost,mm,ll };//order has to stay
 
 public:
 

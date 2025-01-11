@@ -4,38 +4,42 @@
 #include "utils.h"
 #include <cstring>
 #include <iostream>
+#include <fstream>
+
+
 class Board {
 	static constexpr int MAX_X = 80;
 	static constexpr int MAX_Y = 25;
+	int currLevelBoardHeight = 0;
 	
 	int screenPrintDelay = 30;//delay for printing each board line
-	const char* Level[MAX_Y] = {
+	const char* LevelBorders[MAX_Y+2] = {
 		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-		  "Q               .        .        .--.       .      .         .     ,-.-.      Q", // 1
-		  "Q                    .     .   .-(    ).   .         __    .        `. ,' X    Q", // 2
-		  "Q   $   &                     (___.__)__)         ._(  ).       .     `        Q", // 3
-		  "Q>>>>>>>>>>>>>>>>>>>>>                    .      (__.___)                 .    Q", // 4
-		  "Q H                  H                                                         Q", // 5
-		  "Q H                  H                                              *          Q", // 6
-		  "Q H           >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                   / `         Q", // 7
-		  "Q H                                H                              /   `        Q", // 8
-		  "Q H   _V_                          H                             /_____`       Q", // 9
-		  "Q H   @.@                          H                                |          Q", // 10
-		  "Q H  (`_/)                    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  Q", // 11
-		  "Q==   m m                                H                                     Q", // 12
-		  "Q   =======  <<<<<<<<<<<<  >>>>>>>       H                                     Q", // 13
-		  "Q    |                       H           H                                     Q", // 14
-		  "Q----|                       H           H                                     Q", // 15
-		  "Q                            H    ===============================              Q", // 16
-		  "Q           ( )              H                 H                               Q", // 17
-		  "Q         (   )              H                 H                               Q", // 18
-		  "Q          ( )               H                 H                               Q", // 19
-		  "Q          _|| >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>         ~~ |          Q", // 20
-		  "Q         /___`           H                            H        |__|__________|Q", // 21
-		  "Q        /_____`          H                            H       |   |__________|Q", // 22
-		  "Q        |   []|          H                            H       --- 0   0   0   Q", // 23
-		  "================================================================================"  // 24
+		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		  "Q                                                                                Q", // 1
+		  "Q                                                                                Q", // 2
+		  "Q                                                                                Q", // 3
+		  "Q                                                                                Q", // 4
+		  "Q                                                                                Q", // 5
+		  "Q                                                                                Q", // 6
+		  "Q                                                                                Q", // 7
+		  "Q                                                                                Q", // 8
+		  "Q                                                                                Q", // 9
+		  "Q                                                                                Q", // 10
+		  "Q                                                                                Q", // 11
+		  "Q                                                                                Q", // 12
+		  "Q                                                                                Q", // 13
+		  "Q                                                                                Q", // 14
+		  "Q                                                                                Q", // 15
+		  "Q                                                                                Q", // 16
+		  "Q                                                                                Q", // 17
+		  "Q                                                                                Q", // 18
+		  "Q                                                                                Q", // 19
+		  "Q                                                                                Q", // 20
+		  "Q                                                                                Q", // 21
+		  "Q                                                                                Q", // 22
+		  "Q                                                                                Q", // 23
+		  "=================================================================================="  // 24
 	};
 	const char* mainMenu[MAX_Y] = {
 	"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", // 0
@@ -149,7 +153,7 @@ class Board {
 
 	};
 	const char* EmptyBoard[MAX_Y] = {//to make new boards easier
-		"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", // 0
+		"                                                                                ", // 0
 		"                                                                                ", //1
 		"                                                                                ",//2
 		"                                                                                ",//3
@@ -176,28 +180,55 @@ class Board {
 		"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",//24
 
 	};
-
+	 char Level[MAX_Y][MAX_X +1];
 	char currentBoard[MAX_Y][MAX_X + 1]; // +1 for null terminator
 	char currentstaticBoard[MAX_Y][MAX_X + 1];
 	
 public:
+	
 	void reset() ;
 	void print() const;
+	void printEmpty() const;
 	void printMenu() const ;
 	void printPause()const;
 	void printGameOver()const;
 	void printVictory()const;
 	void printInstructions()const;
-	char getChar(int x, int y) const {
-		return currentBoard[y][x];
+	bool load(const std::string& filename);
+
+	const char getChar(int x, int y) const {
+		if (y >= MAX_Y)
+			return '=';
+		if (x >= MAX_X||x < 0||y<0)
+			return 'Q';
+		
+
+		
+				 return currentBoard[y][x];
 	}
-	char getOgChar(int x, int y) const {
-		return Level[y][x];
+	const char getOgChar(int x, int y) const {
+		
+		if (y >= MAX_Y)
+			return '=';
+		if (x >= MAX_X || x < 0 || y < 0)
+			return 'Q';
+				return Level[y][x];
+
+	}
+	 void setOgChar(int x, int y,char chr)  {
+		 Level[y][x] = chr;
+		
+		
 	}
 	
 	void setChar(int x,int y,char chartoset)
 	{
 		currentBoard[y][x] = chartoset;
+	}
+	const char getBorderChar(int x, int y) const {
+		int extraleft = 0;
+		int extraright = 0;
+		return LevelBorders[y][x];
 	}
 	void draw_InPosition(int xpos, int ypos, char chr)
 	{
@@ -206,7 +237,7 @@ public:
 		setChar(xpos, ypos, chr);
 		std::cout.flush();
 	}
-
+	
 };
 
 
