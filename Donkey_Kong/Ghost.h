@@ -15,6 +15,7 @@ class Ghost : public Pointmovement {
 	enum coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost};//order has to stay
 	
 public:
+
 	Ghost(const char move_char, int posx, int posy, Board& board) :
 		Pointmovement(move_char, posx, posy, board), pBoard(&board) {}
 
@@ -43,5 +44,4 @@ public:
 	void changeGhostsAligning(const char colliders[]);
 
 	bool IsCollidingGhostClass(const char colliders[], int length, int xpos, int ypos) const;
-
 };

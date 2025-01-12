@@ -13,32 +13,32 @@ class Board {
 	const int screenPrintDelay = 30;//delay for printing each board line
 	const char* LevelBorders[MAX_Y+2] = {
 		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-		  "Q                                                                                Q", // 1
-		  "Q                                                                                Q", // 2
-		  "Q                                                                                Q", // 3
-		  "Q                                                                                Q", // 4
-		  "Q                                                                                Q", // 5
-		  "Q                                                                                Q", // 6
-		  "Q                                                                                Q", // 7
-		  "Q                                                                                Q", // 8
-		  "Q                                                                                Q", // 9
-		  "Q                                                                                Q", // 10
-		  "Q                                                                                Q", // 11
-		  "Q                                                                                Q", // 12
-		  "Q                                                                                Q", // 13
-		  "Q                                                                                Q", // 14
-		  "Q                                                                                Q", // 15
-		  "Q                                                                                Q", // 16
-		  "Q                                                                                Q", // 17
-		  "Q                                                                                Q", // 18
-		  "Q                                                                                Q", // 19
-		  "Q                                                                                Q", // 20
-		  "Q                                                                                Q", // 21
-		  "Q                                                                                Q", // 22
-		  "Q                                                                                Q", // 23
-		  "=================================================================================="  // 24
-	};
+	"QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+	"Q                                                                                Q", // 1
+	"Q                                                                                Q", // 2
+	"Q                                                                                Q", // 3
+	"Q                                                                                Q", // 4
+	"Q                                                                                Q", // 5
+	"Q                                                                                Q", // 6
+	"Q                                                                                Q", // 7
+	"Q                                                                                Q", // 8
+	"Q                                                                                Q", // 9
+	"Q                                                                                Q", // 10
+	"Q                                                                                Q", // 11
+	"Q                                                                                Q", // 12
+	"Q                                                                                Q", // 13
+	"Q                                                                                Q", // 14
+	"Q                                                                                Q", // 15
+	"Q                                                                                Q", // 16
+	"Q                                                                                Q", // 17
+	"Q                                                                                Q", // 18
+	"Q                                                                                Q", // 19
+	"Q                                                                                Q", // 20
+	"Q                                                                                Q", // 21
+	"Q                                                                                Q", // 22
+	"Q                                                                                Q", // 23
+	"=================================================================================="  // 24
+};
 	const char* mainMenu[MAX_Y] = {
 	"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", // 0
 	"(    ________     ______   _____  ___  __   ___ _______ ___  ___               (", // 1
@@ -151,31 +151,31 @@ class Board {
 
 	};
 	const char* EmptyBoard[MAX_Y] = {//to make new boards easier
-		"                                                                                ", // 0
-		"                                                                                ", //1
-		"                                                                                ",//2
-		"                                                                                ",//3
-		"                                                                                ",//4
-		"                                                                                ",//5
-		"                                                                                ",//6
-		"                                                                                ",//7
-		"                                                                                ",//8
-		"                                                                                ",//9
-		"                                                                                ",//10
-		"                                                                                ",//11
-		"                                                                                ",//12
-		"                                                                                ",//13
-		"                                                                                ",//14
-		"                                                                                ",//15
-		"                                                                                ",//16
-		"                                                                                ",//17
-		"                                                                                ",//18
-		"                                                                                ",//19
-		"                                                                                ",//20
-		"                                                                                ",//21
-		"                                                                                ",//22
-		"                                                                                ",//23
-		"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",//24
+	"                                                                                ", // 0
+	"                                                                                ", //1
+	"                                                                                ",//2
+	"                                                                                ",//3
+	"                                                                                ",//4
+	"                                                                                ",//5
+	"                                                                                ",//6
+	"                                                                                ",//7
+	"                                                                                ",//8
+	"                                                                                ",//9
+	"                                                                                ",//10
+	"                                                                                ",//11
+	"                                                                                ",//12
+	"                                                                                ",//13
+	"                                                                                ",//14
+	"                                                                                ",//15
+	"                                                                                ",//16
+	"                                                                                ",//17
+	"                                                                                ",//18
+	"                                                                                ",//19
+	"                                                                                ",//20
+	"                                                                                ",//21
+	"                                                                                ",//22
+	"                                                                                ",//23
+	"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",//24
 
 	};
 	char Level[MAX_Y][MAX_X +1];
@@ -198,14 +198,13 @@ public:
 	const char getBorderChar(int x, int y) const;
 	void draw_InPosition(int xpos, int ypos, char chr);
 
-	 void setOgChar(int x, int y,char chr)  {
+	void setOgChar(int x, int y,char chr)  {
 		 Level[y][x] = chr;
 	}
 	
 	void setChar(int x,int y,char chartoset){
 		currentBoard[y][x] = chartoset;
 	}
-	
 };
 
 

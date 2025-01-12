@@ -22,8 +22,8 @@ void Barrel::checkAndMoveBarrel() {
 				explode_stage++;
 		}
 	}
-	else
-	{ //making sure that after an explosion,any background char will not be affected
+	//making sure that after an explosion,any background char will not be affected
+	else { 
         SetMovementChar(pBoard->getOgChar(GetX(),GetY()));
 		draw();
 	}
@@ -68,8 +68,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 			set_dir(1, 0,false);
 			prev_dirX = 1;
 			prev_dirY = 0;
-		}
-			
+		}	
 		if (GetAirTime() >= 8) {
 			stop_movement = true;
 			set_barrel_char(explosion_char);
