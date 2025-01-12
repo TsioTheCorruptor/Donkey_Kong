@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-
 #include "utils.h"
 #include "board.h"
 
@@ -11,7 +10,6 @@ class Pointmovement {
 	Direction dir{ 0, 0 }; // current direction: dir.x, dir.y
 	int x =9, y =3;
 	
-
 	 char movement_char=' ';
 	 char prev_char=' ';//char that the point passed trough
 	 bool overwrite_gravity = true;//ignore gravity
@@ -20,86 +18,63 @@ class Pointmovement {
 	 
 	Board* pBoard = nullptr;
 	
-	void draw(char c)const  {
+	void draw(char c) const  {
 		pBoard->draw_InPosition(x, y, c);
 	}
-	
-	
 	
 public:
 	Pointmovement(const char move_char, int posx, int posy, Board& board) : movement_char(move_char), x(posx), y(posy), pBoard(&board) {}
 	
-	
-	
-bool IsColliding(const char colliders[], int length,int xpos,int ypos);
-bool IsCollidingInNextDir(const char colliders[], int length) ;
-bool IsCollidingInGround(const char colliders[], int length);
-bool is_dir_0();
+bool IsColliding(const char colliders[], int length,int xpos,int ypos) const;
+bool IsCollidingInNextDir(const char colliders[], int length) const;
+bool IsCollidingInGround(const char colliders[], int length) const;
+bool is_dir_0() const;
 //void keyPressed(char key);
 void move(const char colliders[], int length);
 void SetPos(int posx, int posy);
 
-
-bool IsGrounded()
-{
+bool IsGrounded() const{
 	return Grounded;
 }
-	void draw()const
-	{
+	void draw() const{
 		draw(movement_char);
-		
 	}
-	void erase() {
+	void erase() const{
 		draw(' ');
 	}
 	
-	void SetMovementChar(char chr)
-	{
+	void SetMovementChar(char chr){
 		movement_char = chr;
 	}
-	void set_prev_movement_char(char chr)
-	{
+	void set_prev_movement_char(char chr){
 		prev_char = chr;
 	}
 	
-	void set_dir(int dirx, int diry,bool overwrite_grav)
-		//the overwrite_grav decides if the set dir will ignore gravity or not
-	{
-		dir.x = dirx;
-		dir.y = diry;
-		overwrite_gravity = overwrite_grav;
-	}
-	const int GetX() const
-	{
+	void set_dir(int dirx, int diry, bool overwrite_grav);
+
+	const int GetX() const{
 		return x;
 	}
-	const int GetY() const
-	{
+	const int GetY() const{
 		return y;
 	}
-	const int GetDirX() const
-	{
+	const int GetDirX() const{
 		return dir.x;
 	}
-	const int GetDirY() const
-	{
+	const int GetDirY() const{
 		return dir.y;
 	}
-	const char GetCurrentBackgroundChar() const
-	{
+	const char GetCurrentBackgroundChar() const{
 		return pBoard->getOgChar(x,y);
 	}
-	
-	const char GetPrevChar() const
-	{
+
+	const char GetPrevChar() const{
 		return prev_char;
 	}
-	 void SetPrevChar() 
-	{
+	 void SetPrevChar() {
 		 prev_char=pBoard->getChar(x,y);
 	}
-	 const int GetAirTime() const
-	 {
+	 const int GetAirTime() const{
 		 return iterations_in_air;
 	}
 };

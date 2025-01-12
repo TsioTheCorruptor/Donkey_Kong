@@ -16,8 +16,7 @@ void  Mario::Jump_InDirection(const Jump_InOrder* order, int length, int currdir
 	}
 
 }
-void  Mario::Jump()
-{
+void  Mario::Jump() {
 	
 	if (!isjumping)
 	{//save dir to set it back after jump
@@ -34,10 +33,7 @@ void  Mario::Jump()
 	if (savedirX == 0 && savedirY == 0)
 		Jump_InDirection(jump_inorder_neutral, move_count_neutral, savedirX, savedirY);
 }
-
-
-
-int  Mario::GetMoveType(char key)
+int  Mario::GetMoveType(char key) 
 {//get mario state according to key pressed and other info
 	key = tolower(key);
 	bool isgrounded = player_movement->IsCollidingInGround(collisions, col_length);
@@ -57,10 +53,7 @@ int  Mario::GetMoveType(char key)
 	}
 	return curr_move;
 }
-
-
-void Mario::InLadder()
-{
+void Mario::InLadder(){
 	//if going up the ladder
 	if (ladder_up)
 	{//move up until detecting ceiling(collider above the player)
@@ -123,7 +116,6 @@ void Mario::DoMarioMoves(int key)
 		{
 			player_movement->set_dir(GetSavedDirX(),GetSavedDirY(), false);
 		}
-
 
 		break;
 	case ladder:

@@ -21,7 +21,7 @@ ShowConsoleCursor(false);
 		
 		//Every "barrel_waitTime" iterations create a new barrel 
 		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
-			barrel.emplace_back( Pointmovement(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard), pBoard);
+			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard));
 			curr_barrel_waitTime = 0;
 		}
 //in this part of the loop,we print the moving objects according to their positions
@@ -31,7 +31,7 @@ ShowConsoleCursor(false);
 		//for each barrel,draw it
 		for (auto it = barrel.begin(); it != barrel.end();)
 		{
-         it->DrawBarrel();
+         it->draw();
 		 it++;
 		}
 		//for each ghost,draw it
@@ -76,12 +76,10 @@ ShowConsoleCursor(false);
 		MoveBarrels(player_point);
 		//move the ghosts
 		MoveGhosts();
-		
 	
 		curr_barrel_waitTime++;	
 	}
 }
-
 void Game::main_game()//the entire game loop
 {
 	getAllBoardFileNames(boardfileNames);
@@ -147,9 +145,6 @@ void Game::main_game()//the entire game loop
 	}
 	
 }
-
-
-
 void Game:: DamageTaken(Pointmovement player_movement)
 {
 	//get player coordinates in his current position and in next dir
@@ -157,10 +152,7 @@ void Game:: DamageTaken(Pointmovement player_movement)
 	int playerY = player_movement.GetY();
 	char playerPoint = pBoard.getChar(playerX, playerY);
 	
-	
-    
-	for (int i = 0; i < col_length; i++)
-	{
+	for (int i = 0; i < col_length; i++){
 		//if collision is detected at the exact same point,reduce health	
 		if (playerPoint == damagecollisions[i])
 		{
@@ -168,8 +160,6 @@ void Game:: DamageTaken(Pointmovement player_movement)
 			break;
 		}
 	}
-
-	
 }
 void Game::FallDamageTaken(Pointmovement player_movement)
 {
@@ -179,8 +169,7 @@ void Game::FallDamageTaken(Pointmovement player_movement)
 		return;
 	}
 }
-void Game::PauseGame()
-{
+void Game::PauseGame(){
 	char key;
 	while (pause_game == true)
 //be in this while loop until player wants to exit pause,when exiting pause continues the game normally
@@ -202,7 +191,6 @@ void Game::PauseGame()
 		}
 	}
 }
-
 bool Game::HealthCheck()
 {//if health got reduced to 0 or lives got reduced to 0,change the game state accordingly,return true to exit level loop
 	if (currhealth <= 0)
@@ -279,7 +267,7 @@ bool Game::HealthCheck()
 	   }
 	   return false;
    }
-   void Game::PrintLives()
+   void Game::PrintLives() const
    {
 	   gotoxy(health_displayX, health_displayY);
 	   std::cout << lives;
@@ -288,18 +276,11 @@ bool Game::HealthCheck()
    {
 	  // memset(PCharsAmount, 0, sizeof(PCharsAmount));
 	   barrel.clear();
-	   
 	   //getBoardData();
 	   resetGhosts();
-	   
-	  
-	   
 	   pBoard.reset();
-	  
-
 	   pBoard.print();
 	   PrintLives();
-	  
    }
    void Game::MoveBarrels(Pointmovement player_movement)
    {
@@ -307,7 +288,7 @@ bool Game::HealthCheck()
 		   it->checkAndMoveBarrel();
 		   if (it->isExploding())
 		   {
-			   ExplosionDamageTaken(it->GetposX(), it->GetposY(),player_movement);
+			   ExplosionDamageTaken(it->GetX(), it->GetY(),player_movement);
 		   }
 		   if (it->isExploded())
 		   {
@@ -321,13 +302,11 @@ bool Game::HealthCheck()
 		   }
 	   }
    }
-
    void Game::checkGhostsColliding() {
 	   for (int i = 0; i < ghost.size(); ++i) {
 		   ghost[i].ghostCollision();
 	   }
    }
-
    void Game::MoveGhosts() {
   
 	   for (int i = 0; i < ghost.size(); ++i) {
@@ -338,8 +317,6 @@ bool Game::HealthCheck()
 		   it->checkAndMoveGhost();
 	   }*/
    }
-  
-	  
 void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
 		   namespace fs = std::filesystem;
 		   for (const auto& entry : fs::directory_iterator(fs::current_path())) {
@@ -350,7 +327,6 @@ void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
 				   vec_to_fill.push_back(filenameStr);
 			   }
 		   }
-	   
 		   if (vec_to_fill.empty()) {
 			   std::cout << "No matching board files found in the current directory." << std::endl;
 		   }
@@ -449,8 +425,7 @@ bool Game::getBoardData()
  {
 	 ghost.clear();
 	 int k = PCharsAmount[int(PlayableChar::ghost_char)];
-	 for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++)
-	 {
+	 for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++){
 		 StartCoord ghostPos = ghostStart[i];
 		 ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard));
 	 }
