@@ -5,8 +5,8 @@
 
 class Mario {
 
- char mario_char = '@';
- char ladder_char ='H';
+ const char mario_char = '@';
+ const char ladder_char ='H';
  static constexpr char upkey = 'w';
  static constexpr char downkey = 'x';
  struct Jump_InOrder { int x, y; };
@@ -45,28 +45,20 @@ enum move_type {no_moves,jumping,ladder};//mario states
 
 public:
 	
-	
-
-
-
 	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard ) : 
 		mario_char(player_char),ladder_char(ladder_Char), player_movement(&player_Movement), board(&pBoard) {}
 
-	
 	void Jump();
 	void InLadder();
 	void DoMarioMoves(int key);
 	void keyPressed(char key);
-	
     void Jump_InDirection(const Jump_InOrder* order, int length,int currdirx,int currdiey);
 	const int GetSavedDirX()const { return savedirX; }
 	const int GetSavedDirY()const { return savedirY; }
 	const char* GetCollisionArray()const { return collisions; }
 	const int GetCollisionArrayLength()const { return col_length; }
-	bool is_jumping()
-	{
+	bool is_jumping() const{
 		return isjumping;
 	}
 	int GetMoveType(char key);
-
 };

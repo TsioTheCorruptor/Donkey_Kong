@@ -5,8 +5,6 @@
 #include "Mario.h"
 #include "Barreles.h"
 #include "Ghost.h"
-
-
 #include <cstring>
 #include <iostream>
 #include <windows.h>
@@ -27,8 +25,6 @@ class Game {
 
 	char PCharsAmount[PcharCount] = {};
 	
-	
-	
 	static constexpr int ESC = 27;
 	//game parameters
 	const int max_lives = 3;
@@ -38,7 +34,6 @@ class Game {
 		  int falldamage_height = 5;
 		  int explosion_damage_radius = 2;
 		 
-
 	bool newGame = true;
     bool pause_game = false;
 	bool printed_instructions = false;//check if already printed instructions
@@ -65,15 +60,13 @@ class Game {
 	static constexpr char damagecollisions[] = { 'O', 'x'};
 	static const int col_length = 2;
 public:
-	
-    
-	
+
 	void main_game();
 	void level_1();
 	void PauseGame();
 	bool HealthCheck();
 	void inMenu();
-    void PrintLives();
+    void PrintLives() const;
 	void ResetLevel();
 	void resetGhosts();
 	void printErrors();
@@ -88,8 +81,4 @@ public:
 	bool IsPaulineReached(Pointmovement player_movement);
 	void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
 	bool getBoardData();
-
-	
-	
-	
 };

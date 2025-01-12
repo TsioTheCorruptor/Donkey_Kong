@@ -4,21 +4,18 @@
 #include "movement.h"
 #include "board.h"
 
-class Barrel {
+class Barrel : public Pointmovement {
 
-	 char barrel_char = 'O';
-	 static constexpr char explosion_char = '*';
-	 Pointmovement barrel_movement;
-	 Board* pBoard = nullptr;
-	 //direction in previous floor
+	char barrel_char = 'O';
+	static constexpr char explosion_char = '*';
+	Board* pBoard = nullptr;
+	//direction in previous floor
 	int prev_dirX=0;
 	int prev_dirY=0;
 	//start position
     int start_posX=0 ;
     int start_posY=0;
-	int lengthFallen=0;
 	
-
 	static constexpr char collisions[] = { '@','Q','<','=','>'};
 	enum coll_hit{player,wall,floor_left,neutral_floor,floor_right };//order has to stay
 
@@ -26,27 +23,17 @@ class Barrel {
    //iterations from explosion start to explosion end
    static constexpr int explode_delay = 2;
    int explode_stage = 0;
-     bool explosion_started=false;
-	 bool explosion_ended = false;
-	
-	 
-	 bool stop_movement = false;//stop barrel movement
+   bool explosion_started=false;
+   bool explosion_ended = false;
+   bool stop_movement = false;//stop barrel movement
+
  public:
-	
-	 Barrel(  Pointmovement point, Board& board) :
-		 barrel_movement(point), pBoard(&board) {}
-
-	
-
-	
-
-	
+	 Barrel(const char move_char, int posx, int posy, Board& board) :
+		 Pointmovement(move_char, posx, posy, board), pBoard(&board) {}
 
 	void checkAndMoveBarrel();
 
-	
-
-	char get_barrel_char() {
+	char get_barrel_char() const{
 		return barrel_char;
 	}
 	void set_barrel_char(const char chr) {
@@ -55,20 +42,10 @@ class Barrel {
 	
 	void getBarrelDir(const char colliders[]);
 
-	const bool isExploded() {
+	const bool isExploded() const{
 		return explosion_ended;
 	}
-	const bool isExploding() {
+	const bool isExploding() const{
 		return explosion_started;
-	}
-	void DrawBarrel();
-	const int GetposX()
-	{
-		return barrel_movement.GetX();
-	}
-	const int GetposY()
-	{
-		return barrel_movement.GetY();
-	}
-	
+	}	
 };

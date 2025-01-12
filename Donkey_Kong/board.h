@@ -1,18 +1,16 @@
 ﻿#pragma once
 
-
 #include "utils.h"
 #include <cstring>
 #include <iostream>
 #include <fstream>
 
-
 class Board {
 	static constexpr int MAX_X = 80;
 	static constexpr int MAX_Y = 25;
-	int currLevelBoardHeight = 0;
+	const int currLevelBoardHeight = 0;
 	
-	int screenPrintDelay = 30;//delay for printing each board line
+	const int screenPrintDelay = 30;//delay for printing each board line
 	const char* LevelBorders[MAX_Y+2] = {
 		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
@@ -180,13 +178,13 @@ class Board {
 		"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",//24
 
 	};
-	 char Level[MAX_Y][MAX_X +1];
+	char Level[MAX_Y][MAX_X +1];
 	char currentBoard[MAX_Y][MAX_X + 1]; // +1 for null terminator
 	char currentstaticBoard[MAX_Y][MAX_X + 1];
 	
 public:
 	
-	void reset() ;
+	void reset();
 	void print() const;
 	void printEmpty() const;
 	void printMenu() const ;
@@ -195,47 +193,17 @@ public:
 	void printVictory()const;
 	void printInstructions()const;
 	bool load(const std::string& filename);
+	const char getChar(int x, int y) const;
+	const char getOgChar(int x, int y) const;
+	const char getBorderChar(int x, int y) const;
+	void draw_InPosition(int xpos, int ypos, char chr);
 
-	const char getChar(int x, int y) const {
-		if (y >= MAX_Y)
-			return '=';
-		if (x >= MAX_X||x < 0||y<0)
-			return 'Q';
-		
-
-		
-				 return currentBoard[y][x];
-	}
-	const char getOgChar(int x, int y) const {
-		
-		if (y >= MAX_Y)
-			return '=';
-		if (x >= MAX_X || x < 0 || y < 0)
-			return 'Q';
-				return Level[y][x];
-
-	}
 	 void setOgChar(int x, int y,char chr)  {
 		 Level[y][x] = chr;
-		
-		
 	}
 	
-	void setChar(int x,int y,char chartoset)
-	{
+	void setChar(int x,int y,char chartoset){
 		currentBoard[y][x] = chartoset;
-	}
-	const char getBorderChar(int x, int y) const {
-		int extraleft = 0;
-		int extraright = 0;
-		return LevelBorders[y][x];
-	}
-	void draw_InPosition(int xpos, int ypos, char chr)
-	{
-		gotoxy(xpos, ypos);
-		std::cout << chr;
-		setChar(xpos, ypos, chr);
-		std::cout.flush();
 	}
 	
 };
