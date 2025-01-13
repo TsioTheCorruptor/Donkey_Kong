@@ -34,7 +34,7 @@ void Game::level_1() {
 		}
 		//check for fall damage and collision damage with barrels,draw player after checking collisions
 		DamageTaken(player_point);
-		player_point.draw();	
+		player_point.draw();
 		FallDamageTaken(player_point);
 		//check health,reset accordingly
 		if(HealthCheck())
@@ -49,11 +49,27 @@ void Game::level_1() {
 				pBoard.printPause();
 				pause_game = true;
 			}
-			player.keyPressed(key);
+			else if (key == 'p') {
+				player.set_hitting(true);
+				usedHammer = true;
+			}
+			else {
+				player.keyPressed(key);
+			}
 			PauseGame();
 		}
+		//Draw the hammer above Mario (if he has it) or beside him (if he attacks)
+		player.drawHammer();
 		//delay per iteration(may be specific per level)
 		Sleep(iterationTime);
+		//Check all ghosts and barrels if colided with the hammer
+		if (usedHammer == true) {
+			checkAllGhostsIfHit(player_point);
+			checkAllBarrelsIfHit(player_point);
+			usedHammer = false;
+		}
+		//Erase the hammer after the sleep
+		player.eraseHammer();
 		//check according to player input which move mario will do
 		player.DoMarioMoves(key);
 		//check collisions with barrels again
@@ -68,6 +84,7 @@ void Game::level_1() {
 		//move the ghosts
 		MoveGhosts();
 		curr_barrel_waitTime++;	
+		
 	}
 }
 //the entire game loop
@@ -244,7 +261,8 @@ void Game::PrintLives() const{
 }
 void Game::ResetLevel(){
 
-	
+	pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[7]);
+	// memset(PCharsAmount, 0, sizeof(PCharsAmount));
 	barrel.clear();
 	
 	resetGhosts();
@@ -280,6 +298,24 @@ void Game::MoveGhosts() {
   
 	for (int i = 0; i < ghost.size(); ++i) {
 		ghost[i].checkAndMoveGhost();
+	}
+}
+void Game::checkAllGhostsIfHit(Pointmovement player_point) {
+
+	for (int i = 0; i < ghost.size(); ++i) {
+		//If a ghost got hit by the hammer, remove it from the vector
+		if (ghost[i].checkGhostHit(player_point)) {
+			ghost.erase(ghost.begin() + i);
+		}
+	}
+}
+void Game::checkAllBarrelsIfHit(Pointmovement player_point) {
+
+	for (int i = 0; i < barrel.size(); ++i) {
+		//If a barrel got hit by the hammer, remove it from the vector
+		if (barrel[i].checkBarrelHit(player_point)) {
+			barrel.erase(barrel.begin() + i);
+		}
 	}
 }
 void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
@@ -350,6 +386,15 @@ bool Game::getBoardData() {
 				pBoard.setOgChar(col, row, ' ');
 				}
 				PCharsAmount[int(PlayableChar::legend_char)]++;
+			case PlayableChars[int(PlayableChar::hammer_char)]:
+				if (PCharsAmount[int(PlayableChar::hammer_char)] < 1)
+					hammerCoord = currcoord;
+				else {
+					pBoard.setChar(col, row, ' ');
+					pBoard.setOgChar(col, row, ' ');
+
+				}
+				PCharsAmount[int(PlayableChar::hammer_char)]++;
 				break;
 			}
 		}
@@ -518,4 +563,6 @@ void Game::printTimeScore() {
 
 
 }
+
+
 

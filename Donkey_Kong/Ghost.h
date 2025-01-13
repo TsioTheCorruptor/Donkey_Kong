@@ -44,4 +44,6 @@ public:
 	void changeGhostsAligning(const char colliders[]);
 
 	bool IsCollidingGhostClass(const char colliders[], int length, int xpos, int ypos) const;
+
+	bool checkGhostHit(Pointmovement mario) const;
 };
