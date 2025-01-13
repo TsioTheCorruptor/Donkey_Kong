@@ -17,10 +17,10 @@
 class Game {
 	//const chars
 	struct StartCoord { int x=10, y=22; }; // inner private struct
-	static constexpr int PcharCount = 6;
-	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L'};
-	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char };
-	StartCoord playerStart,barrelStart,paulineCoord;
+	static constexpr int PcharCount = 8;
+	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L','P'};
+	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char, hammer_char };
+	StartCoord playerStart,barrelStart,paulineCoord,hammerCoord;
 	std::vector <StartCoord> ghostStart;
 	char PCharsAmount[PcharCount] = {};
 	
@@ -58,6 +58,8 @@ class Game {
 	static constexpr char damagecollisions[] = { 'O', 'x'};
 	static const int col_length = 2;
 
+	bool usedHammer = false;
+
 public:
 
 	void main_game();
@@ -72,7 +74,9 @@ public:
 	void getLevelInput();
 	void LevelSelect();
 	void MoveBarrels(Pointmovement player_movement);
+	void checkAllBarrelsIfHit(Pointmovement player_point);
 	void MoveGhosts();
+	void checkAllGhostsIfHit(Pointmovement player_point);
 	void checkGhostsColliding();
 	void DamageTaken(Pointmovement player_movement);
 	void FallDamageTaken(Pointmovement player_movement);
@@ -80,4 +84,5 @@ public:
 	bool IsPaulineReached(Pointmovement player_movement);
 	void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
 	bool getBoardData();
+	
 };

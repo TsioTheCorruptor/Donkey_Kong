@@ -4,13 +4,15 @@
 #include "board.h"
 
 class Mario {
-
+	
 	const char mario_char = '@';
 	const char ladder_char ='H';
+	const char hammer_char = 'P';
 	static constexpr char upkey = 'w';
 	static constexpr char downkey = 'x';
 	struct Jump_InOrder { int x, y; };
 	bool go_below_ground = false;
+	bool hasHammer = false;
  
 	int move_stage = 0;
 	//jump directions
@@ -23,6 +25,7 @@ class Mario {
 	static constexpr Jump_InOrder jump_inorder_neutral[] = { {0, -1},{0, -1} };
 	static constexpr int move_count_neutral = 2;
 
+	bool isHitting = false;
 	bool isjumping = false;
 	bool ladder_up = true;//going up or down ladder
 	Pointmovement* player_movement = nullptr;
@@ -30,7 +33,7 @@ class Mario {
 	//save dir for after jump
 	int savedirX = 0;
 	int savedirY = 0;
-	static constexpr char keys[] = { 'a', 'd', 's' };
+	static constexpr char keys[] = { 'a', 'd', 's'};
 			  
 	static constexpr size_t numKeys = sizeof(keys) / sizeof(keys[0]);
 	struct Direction { int x, y; }; // inner private struct
@@ -61,4 +64,19 @@ public:
 		return isjumping;
 	}
 	int GetMoveType(char key);
+
+	bool has_hammer() const {
+		return hasHammer;
+	}
+
+	void set_hammer(bool set) {
+		hasHammer = set;
+	}
+
+	void drawHammer();
+	void eraseHammer();
+
+	void set_hitting(bool set) {
+		isHitting = set;
+	}
 };
