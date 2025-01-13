@@ -22,7 +22,6 @@ class Game {
 	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char };
 	StartCoord playerStart,barrelStart,paulineCoord;
 	std::vector <StartCoord> ghostStart;
-
 	char PCharsAmount[PcharCount] = {};
 	
 	static constexpr int ESC = 27;
@@ -45,20 +44,20 @@ class Game {
 	//screen time of specific boards
 	int GO_screentime = 2000;
 	int Victory_screentime =4000;
-	 enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors};//game states
-	 gameState currstate =gameState:: menu;
-	 int currLevel = 0;
-	 Board pBoard ;
-	 enum class errorType{not_found,bad_board,general};
-	 errorType currError = errorType::general;
-	 std::vector <Barrel> barrel;
-	 std::vector <Ghost> ghost;
-	 std::vector<std::string> boardfileNames;
-	 int fileamount = 0;
-	
+	enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors};//game states
+	gameState currstate =gameState:: menu;
+	int currLevel = 0;
+	Board pBoard ;
+	enum class errorType{not_found,bad_board,general};
+	errorType currError = errorType::general;
+	std::vector <Barrel> barrel;
+	std::vector <Ghost> ghost;
+	std::vector<std::string> boardfileNames;
+	int fileamount = 0;
 	
 	static constexpr char damagecollisions[] = { 'O', 'x'};
 	static const int col_length = 2;
+
 public:
 
 	void main_game();
