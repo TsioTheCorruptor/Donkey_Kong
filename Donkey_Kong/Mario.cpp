@@ -84,12 +84,6 @@ void Mario::InLadder(){
 	}
 }
 void Mario::DoMarioMoves(int key){
-	
-	//Check if mario met a hammer
-	if(player_movement->GetCurrentBackgroundChar() == hammer_char) {
-		board->setOgChar(player_movement->GetX(), player_movement->GetY(), ' ');
-		set_hammer(true);
-	}
 	switch (GetMoveType(key)){
 	case no_moves://default case
 		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
@@ -116,28 +110,5 @@ void Mario::keyPressed(char key) {
 			player_movement->set_dir(directions[i].x,directions[i].y,false);
 			return;
 		}
-	}
-}
-
-void Mario::drawHammer() {
-
-	char oGchar = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 1);
-	if (has_hammer()) {
-		if (isHitting == true) {
-			board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
-			board->draw_InPosition(player_movement->GetX() + player_movement->GetDirX(), player_movement->GetY(), hammer_char);
-		}
-		else {
-			board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, hammer_char);
-		}
-	}	
-}
-
- void Mario::eraseHammer(){
-
-	char oGchar = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 1);
-	if (has_hammer()) {
-		board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
-		isHitting = false;
 	}
 }

@@ -9,11 +9,11 @@ void Ghost::ghostCollision() {
 void Ghost::changeGhostsAligning(const char colliders[]) {
 
 	//Get chars to check for close ghosts
-	char leftchar2 = pBoard->getChar(GetX() + 2, GetY());
-	char rightchar2 = pBoard->getChar(GetX() - 2, GetY());
+	char leftchar = pBoard->getChar(GetX() + 2, GetY());
+	char rightchar = pBoard->getChar(GetX() - 2, GetY());
 	//These chars are for if a barrel hits a wall or a ledge
-	char leftchar = pBoard->getChar(GetX() + 1, GetY());
-	char rightchar = pBoard->getChar(GetX() - 1, GetY());
+	char leftchar2 = pBoard->getChar(GetX() + 1, GetY());
+	char rightchar2 = pBoard->getChar(GetX() - 1, GetY());
 
 	int newDirX = GetDirX() * -1;
 	//Check for ghosts on the left
@@ -112,34 +112,4 @@ bool Ghost::IsCollidingGhostClass(const char colliders[], const int length, int 
 			return true;
 	}
 	return false;
-}
-
-bool Ghost::checkGhostHit(Pointmovement mario) const {
-
-	//leftchar2, and rightchar2 are accessible because it is too hard to hit with only one single char
-	//to the side
-	char leftchar, rightchar, leftchar2, rightchar2;
-	
-	//Check the right side of the ghost, if mario comes from the left
-	if (mario.GetDirX() == -1) {
-		leftchar = pBoard->getChar(GetX() + 1, GetY());
-		leftchar2 = pBoard->getChar(GetX() + 2, GetY());
-		if (leftchar2 == '@' || leftchar == '@') {
-			erase();
-			return true;
-		}
-		else
-			return false;
-	}
-	//Check the left side of the ghost, if mario comes from the right
-	else if (mario.GetDirX() == 1) {
-		rightchar = pBoard->getChar(GetX() - 1, GetY());
-		rightchar2 = pBoard->getChar(GetX() - 2, GetY());
-		if (rightchar2 == '@' || rightchar == '@') {
-			erase();
-			return true;
-		}
-		else
-			return false;
-	}
 }

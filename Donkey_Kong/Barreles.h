@@ -50,7 +50,5 @@ class Barrel : public Pointmovement {
 
 	const bool isExploding() const{
 		return explosion_started;
-	}
-
-	bool checkBarrelHit(Pointmovement mario) const;
+	}	
 };
