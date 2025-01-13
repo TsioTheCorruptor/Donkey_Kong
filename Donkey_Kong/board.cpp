@@ -15,11 +15,7 @@ const char Board::getOgChar(int x, int y) const {
 	return Level[y][x];
 
 }
-const char Board::getBorderChar(int x, int y) const {
-	int extraleft = 0;
-	int extraright = 0;
-	return LevelBorders[y][x];
-}
+
 void Board::draw_InPosition(int xpos, int ypos, char chr) {
 	gotoxy(xpos, ypos);
 	std::cout << chr;

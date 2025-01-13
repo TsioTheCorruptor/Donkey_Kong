@@ -13,19 +13,25 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#include <time.h>
 
 class Game {
 	//const chars
 	struct StartCoord { int x=10, y=22; }; // inner private struct
-	static constexpr int PcharCount = 6;
+	static constexpr int PcharCount = 7;
 	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L'};
 	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char };
-	StartCoord playerStart,barrelStart,paulineCoord;
+	StartCoord playerStart,barrelStart,paulineCoord,legendCoord;
 	std::vector <StartCoord> ghostStart;
 	char PCharsAmount[PcharCount] = {};
 	
 	static constexpr int ESC = 27;
 	//game parameters
+	int levelSelectScreenIndex = 0;
+	const int iterationTime = 80;
+	const int iterationUntilSec = (1000 / iterationTime)+1;
+	int iterationCount = 0;;
+	int GameTime = 0;
 	const int max_lives = 3;
 	      int lives = max_lives;
     const int health_per_reset=1;
@@ -36,15 +42,16 @@ class Game {
 	bool newGame = true;
     bool pause_game = false;
 	bool printed_instructions = false;//check if already printed instructions
-	//health pos in board(just for one level for now)
+	//health pos in board
 	static constexpr int  health_displayX = 76;
 	static constexpr int  health_displayY = 2;
 	int barrel_waitTime = 15;
 	int curr_barrel_waitTime = barrel_waitTime;
 	//screen time of specific boards
-	int GO_screentime = 2000;
-	int Victory_screentime =4000;
-	enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors};//game states
+	const int GO_screentime = 2000;
+	const int Victory_screentime =4000;
+	const int Error_screentime = 2000;
+	enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors,get_levelInput};//game states
 	gameState currstate =gameState:: menu;
 	int currLevel = 0;
 	Board pBoard ;
@@ -74,6 +81,11 @@ public:
 	void MoveBarrels(Pointmovement player_movement);
 	void MoveGhosts();
 	void checkGhostsColliding();
+	void printFileNames();
+	void printTimeScore();
+	void printGameInfo() const;
+	void printLevelInput(char inputstr[]) const;
+	bool checkLevelInput(char input[], int fileamount);
 	void DamageTaken(Pointmovement player_movement);
 	void FallDamageTaken(Pointmovement player_movement);
 	void ExplosionDamageTaken(int barrelx, int barrely, Pointmovement player_movement);

@@ -11,34 +11,7 @@ class Board {
 	const int currLevelBoardHeight = 0;
 	
 	const int screenPrintDelay = 30;//delay for printing each board line
-	const char* LevelBorders[MAX_Y+2] = {
-		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-	"QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-	"Q                                                                                Q", // 1
-	"Q                                                                                Q", // 2
-	"Q                                                                                Q", // 3
-	"Q                                                                                Q", // 4
-	"Q                                                                                Q", // 5
-	"Q                                                                                Q", // 6
-	"Q                                                                                Q", // 7
-	"Q                                                                                Q", // 8
-	"Q                                                                                Q", // 9
-	"Q                                                                                Q", // 10
-	"Q                                                                                Q", // 11
-	"Q                                                                                Q", // 12
-	"Q                                                                                Q", // 13
-	"Q                                                                                Q", // 14
-	"Q                                                                                Q", // 15
-	"Q                                                                                Q", // 16
-	"Q                                                                                Q", // 17
-	"Q                                                                                Q", // 18
-	"Q                                                                                Q", // 19
-	"Q                                                                                Q", // 20
-	"Q                                                                                Q", // 21
-	"Q                                                                                Q", // 22
-	"Q                                                                                Q", // 23
-	"=================================================================================="  // 24
-};
+	
 	const char* mainMenu[MAX_Y] = {
 	"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", // 0
 	"(    ________     ______   _____  ___  __   ___ _______ ___  ___               (", // 1
@@ -195,7 +168,7 @@ public:
 	bool load(const std::string& filename);
 	const char getChar(int x, int y) const;
 	const char getOgChar(int x, int y) const;
-	const char getBorderChar(int x, int y) const;
+	
 	void draw_InPosition(int xpos, int ypos, char chr);
 
 	void setOgChar(int x, int y,char chr)  {

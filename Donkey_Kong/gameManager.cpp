@@ -4,10 +4,6 @@
 void Game::level_1() {
 	
 	ShowConsoleCursor(false);
-	//each reset,before the game loop
-	//ResetLevel();
-	//set starting point for mario and barrels
-
 	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
 	player_point.set_dir(0, 0,false);
 	Mario player(PlayableChars[int(PlayableChar::player_char)], PlayableChars[int(PlayableChar::ladder_char)],player_point,pBoard);
@@ -15,6 +11,8 @@ void Game::level_1() {
 	//each reset,before the game loop
 
 	while (true) {
+		printTimeScore();
+
 		//Every "barrel_waitTime" iterations create a new barrel 
 		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
 			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard));
@@ -55,7 +53,7 @@ void Game::level_1() {
 			PauseGame();
 		}
 		//delay per iteration(may be specific per level)
-		Sleep(100);
+		Sleep(iterationTime);
 		//check according to player input which move mario will do
 		player.DoMarioMoves(key);
 		//check collisions with barrels again
@@ -76,7 +74,7 @@ void Game::level_1() {
 void Game::main_game(){
 
 	getAllBoardFileNames(boardfileNames);
-	std::srand(std::time(0));
+	std::srand(unsigned int(time(0)));
 	while (true){
 		switch (int(currstate)){
 			case int(gameState::level) :
@@ -85,6 +83,9 @@ void Game::main_game(){
 			case int(gameState::level_select) :	
 				LevelSelect();
 				break;
+				case int(gameState::get_levelInput) :
+					getLevelInput();
+					break;
 			case int(gameState::manage_errors) :
 				pBoard.printEmpty();
 				printErrors();
@@ -187,6 +188,7 @@ bool Game::HealthCheck(){
 void Game::inMenu() {
 	bool inmenu = true;
 	char key = ' ';
+	GameTime = 0;
 	printed_instructions = false;
 
 	while (inmenu==true){
@@ -195,8 +197,10 @@ void Game::inMenu() {
 			key = _getch();
 			if (key == '1'){
 				inmenu = false;
-				getLevelInput();
-				currstate = gameState::level_select;
+				//switchedLevelSelect = false;
+				//getLevelInput();
+				//if(!switchedLevelSelect)
+				currstate = gameState::get_levelInput;
 			}
 			if (key == '9'){
 				inmenu = false;
@@ -240,13 +244,14 @@ void Game::PrintLives() const{
 }
 void Game::ResetLevel(){
 
-	// memset(PCharsAmount, 0, sizeof(PCharsAmount));
+	
 	barrel.clear();
-	//getBoardData();
+	
 	resetGhosts();
 	pBoard.reset();
 	pBoard.print();
-	PrintLives();
+	printGameInfo();
+	
 }
 void Game::MoveBarrels(Pointmovement player_movement){
 	for (auto it = barrel.begin(); it != barrel.end();) {
@@ -337,10 +342,19 @@ bool Game::getBoardData() {
 				}
 				PCharsAmount[int(PlayableChar::pauline_char)]++;
 				break;
+			case PlayableChars[int(PlayableChar::legend_char)]:
+				
+				if (PCharsAmount[int(PlayableChar::legend_char)] < 1) {
+				legendCoord = currcoord;
+				pBoard.setChar(col, row, ' ');
+				pBoard.setOgChar(col, row, ' ');
+				}
+				PCharsAmount[int(PlayableChar::legend_char)]++;
+				break;
 			}
 		}
 	}
-	if (PCharsAmount[int(PlayableChar::player_char)] == 0 || PCharsAmount[int(PlayableChar::pauline_char)] == 0)
+	if (PCharsAmount[int(PlayableChar::player_char)] == 0 || PCharsAmount[int(PlayableChar::pauline_char)] == 0|| PCharsAmount[int(PlayableChar::legend_char)] == 0)
 		return false;
 	return true;
  }
@@ -374,26 +388,60 @@ void Game::resetGhosts(){
 	}
 }
 void Game::getLevelInput(){
+	StartCoord printInputText = { 33,18 };
+	int maxfiles = 30;
+	int currinputIndex = 0;
+	char inputDisplay[3] = "XX";
+	char resetinputDisplay[3] = "XX";
 
 	pBoard.printEmpty();
+	gotoxy(printInputText.x, printInputText.y);
+	std::cout << "Enter Level Input";
+	printLevelInput(inputDisplay);
 	gotoxy(0, 0);
+	
+	
+	int resetdelay = 200;
+	
 	fileamount = boardfileNames.size();
-	if (fileamount > 0) {
-		for (int i = 0; i <fileamount ; i++)
-			std::cout << boardfileNames[i]<<"  ->press"<<i+1<<'\n';
+	if (fileamount > 0&&fileamount<maxfiles) {
+		printFileNames();	
 		while (true){
 			if (_kbhit()){
 				char key = _getch();
-				if (key - '0' >= 1 && key - '0' <= fileamount) {
-					currLevel = key - '0'-1;
-					break;
+				if (key == 'D') {
+					currstate = gameState::get_levelInput;
+					
+					return;
+				}
+				if (key - '0'+1 >= 1 && key - '0' <= fileamount) {
+					//currLevel = key - '0'-1;
+					inputDisplay[currinputIndex] = key;
+					printLevelInput(inputDisplay);
+					currinputIndex++;
+					if (currinputIndex == 2) {
+						currinputIndex = 0;
+						if (checkLevelInput(inputDisplay, fileamount))
+							break;
+                        #pragma warning(suppress : 4996) // to allow strcpy
+						strcpy(inputDisplay, resetinputDisplay);
+						Sleep(resetdelay);
+						printLevelInput(inputDisplay);
+
+					}
+						
+					//break;
 				}
 			}
 		}
 	}
 	else {
+		if(fileamount<=0)
 		std::cout << "no levels found!";
-		Sleep(2000);
+		else if(fileamount>maxfiles)
+		std::cout << "too many levels!";
+
+		Sleep(Error_screentime);
 	} 
 }
 void Game::LevelSelect() {
@@ -415,5 +463,59 @@ void Game::LevelSelect() {
 	else {
 		currstate = gameState::menu;
 	}
+}
+void Game:: printLevelInput(char inputstr[])const {
+	StartCoord printcoord = { 40,20 };
+	
+	gotoxy(printcoord.x, printcoord.y);
+	std::cout << inputstr;
+
+}
+bool Game::checkLevelInput(char input[], int fileamount){
+	int inputnum = atoi(input);
+	if (inputnum <= fileamount-1 && inputnum >= 0)
+	{
+		currstate = gameState::level_select;
+		currLevel = inputnum;
+		return true;
+	}
+	return false;
+}
+void Game::printFileNames() {
+	int printcount = 0;
+	const char pressXstr[] = "  ->press";
+	int filelength = strlen(boardfileNames[0].c_str());
+	int pressXstrlength = strlen(pressXstr);
+	
+	
+		for (int i = 0; i < fileamount; i++) {
+			if (printcount == 11) {
+				printcount = 0;
+				gotoxy(filelength + pressXstrlength + 3, 0);
+			}
+			std::cout << boardfileNames[i] << pressXstr << int(i / 10) << i % 10 << '\n';
+			printcount++;
+		}
+	
+}
+void Game::printGameInfo() const
+{
+	gotoxy(legendCoord.x, legendCoord.y);
+	std::cout << "Health: " <<lives;
+	gotoxy(legendCoord.x, legendCoord.y+1);
+	std::cout << "Level: " << currLevel;
+	gotoxy(legendCoord.x, legendCoord.y + 2);
+	std::cout << "Time: " << GameTime;
+}
+void Game::printTimeScore() {
+	iterationCount++;
+	if (iterationCount >= iterationUntilSec) {
+		GameTime++;
+		gotoxy(legendCoord.x, legendCoord.y + 2);
+		std::cout << "Time: " << GameTime;
+		iterationCount = 0;
+	}
+
+
 }
 
