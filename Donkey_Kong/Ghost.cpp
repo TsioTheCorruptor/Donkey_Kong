@@ -113,3 +113,34 @@ bool Ghost::IsCollidingGhostClass(const char colliders[], const int length, int 
 	}
 	return false;
 }
+
+
+bool Ghost::checkGhostHit(Pointmovement mario) const {
+
+	//leftchar2, and rightchar2 are accessible because it is too hard to hit with only one single char
+	//to the side
+	char leftchar, rightchar, leftchar2, rightchar2;
+
+	//Check the right side of the ghost, if mario comes from the left
+	if (mario.GetDirX() == -1) {
+		leftchar = pBoard->getChar(GetX() + 1, GetY());
+		leftchar2 = pBoard->getChar(GetX() + 2, GetY());
+		if (leftchar2 == playerChar || leftchar == playerChar) {
+			erase();
+			return true;
+		}
+		else
+			return false;
+	}
+	//Check the left side of the ghost, if mario comes from the right
+	else if (mario.GetDirX() == 1) {
+		rightchar = pBoard->getChar(GetX() - 1, GetY());
+		rightchar2 = pBoard->getChar(GetX() - 2, GetY());
+		if (rightchar2 == playerChar || rightchar == playerChar) {
+			erase();
+			return true;
+		}
+		else
+			return false;
+	}
+}

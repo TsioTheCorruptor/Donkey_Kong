@@ -18,15 +18,20 @@
 class Game {
 	//const chars
 	struct StartCoord { int x=10, y=22; }; // inner private struct
-	static constexpr int PcharCount = 7;
-	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L'};
-	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char };
-	StartCoord playerStart,barrelStart,paulineCoord,legendCoord;
+	static constexpr int PcharCount = 8;
+	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L','p'};
+	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char, hammer_char };
+	StartCoord playerStart,barrelStart,paulineCoord,legendCoord,hammerCoord;
 	std::vector <StartCoord> ghostStart;
 	char PCharsAmount[PcharCount] = {};
 	
+	const char enterGame = '1';
+	const char viewInstructions = '8';
+	const char exitGame = '9';
 	static constexpr int ESC = 27;
 	//game parameters
+	const int rowMax = 25;
+	const int colMax = 80;
 	int maxFilesPerScreen = 7;
 	int levelSelectScreenIndex = 0;
 	const int iterationTime = 80;
@@ -39,6 +44,7 @@ class Game {
 	      int currhealth = health_per_reset;
 		  int falldamage_height = 5;
 		  int explosion_damage_radius = 2;
+		  bool usedHammer = false;
 		 
 	bool newGame = true;
     bool pause_game = false;
@@ -55,7 +61,7 @@ class Game {
 	enum class  gameState{menu,level,reset,game_over,victory,exit_game,instructions,level_select,manage_errors,get_levelInput};//game states
 	gameState currstate =gameState:: menu;
 	int currLevel = 0;
-	Board pBoard ;
+	Board pBoard;
 	enum class errorType{not_found,bad_board,general};
 	errorType currError = errorType::general;
 	std::vector <Barrel> barrel;
@@ -82,6 +88,8 @@ public:
 	void MoveBarrels(Pointmovement player_movement);
 	void MoveGhosts();
 	void checkGhostsColliding();
+	void checkAllGhostsIfHit(Pointmovement player_point);
+	void checkAllBarrelsIfHit(Pointmovement player_point);
 	void printFileNames();
     const int getFileIndexStart() const;
     const int getFileIndexend(int fileamount)const;

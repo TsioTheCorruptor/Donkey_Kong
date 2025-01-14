@@ -7,6 +7,7 @@
 class Barrel : public Pointmovement {
 
     char barrel_char = 'O';
+	CHAR playerChar = '@';
 	static constexpr char explosion_char = '*';
 	Board* pBoard = nullptr;
 	//direction in previous floor
@@ -28,9 +29,9 @@ class Barrel : public Pointmovement {
 	bool stop_movement = false;//stop barrel movement
 
  public:
-
-	 Barrel(const char move_char, int posx, int posy, Board& board) :
-		 Pointmovement(move_char, posx, posy, board), pBoard(&board) {}
+	 
+	 Barrel(const char move_char, int posx, int posy, Board& board, char player_char) :
+		 Pointmovement(move_char, posx, posy, board), pBoard(&board), playerChar(player_char) {}
 
 	void checkAndMoveBarrel();
 
@@ -51,4 +52,6 @@ class Barrel : public Pointmovement {
 	const bool isExploding() const{
 		return explosion_started;
 	}	
+
+	bool checkBarrelHit(Pointmovement mario) const;
 };
