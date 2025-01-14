@@ -128,9 +128,12 @@ void Mario::drawHammer() {
 	if (has_hammer() && player_movement->GetY() != 0) {
 		//If the player pressed 'p' AND he is ground AND he isnt jumping, only then print the P beside Mario
 		//to avoid unnesscery printing
+		
 		if (isHitting == true && player_movement->IsGrounded() && isjumping == false && player_movement->GetDirX() != 0) {
 			board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
-			board->draw_InPosition(player_movement->GetX() + player_movement->GetDirX(), player_movement->GetY(), hammer_char);
+			if (player_movement->GetX() != 0 && player_movement->GetX() != 80) {
+				board->draw_InPosition(player_movement->GetX() + player_movement->GetDirX(), player_movement->GetY(), hammer_char);
+			}
 		}
 		//If he isnt attacking, just print the hammer above his head
 		else {
@@ -142,8 +145,11 @@ void Mario::drawHammer() {
 void Mario::eraseHammer() {
 
 	char oGchar = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 1);
-	if (has_hammer() && player_movement->GetDirX() != 0) {
+	char oGchar2 = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 2);
+	if (has_hammer()) {
+		
 		board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
+		board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 2, oGchar2);
 		isHitting = false;
 	}
 }
