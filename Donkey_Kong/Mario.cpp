@@ -1,6 +1,7 @@
 #include "Mario.h"
 
 void  Mario::Jump_InDirection(const Jump_InOrder* order, int length, int currdirx, int currdiry) {
+
 	curr_move=jumping;
 	isjumping = true;
 	//go through every dir in the order array,advence one index per iteration
@@ -84,6 +85,12 @@ void Mario::InLadder(){
 	}
 }
 void Mario::DoMarioMoves(int key){
+
+	if (player_movement->GetCurrentBackgroundChar() == hammer_char) {
+		board->setOgChar(player_movement->GetX(), player_movement->GetY(), ' ');
+		set_hammer(true);
+	}
+
 	switch (GetMoveType(key)){
 	case no_moves://default case
 		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
@@ -112,3 +119,33 @@ void Mario::keyPressed(char key) {
 		}
 	}
 }
+
+
+void Mario::drawHammer() {
+
+	char oGchar = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 1);
+	//Draw the hammer only if mario holds one, and if he doesnt touch the ceileing
+	if (has_hammer() && player_movement->GetY() != 0) {
+		//If the player pressed 'p' AND he is ground AND he isnt jumping, only then print the P beside Mario
+		//to avoid unnesscery printing
+		if (isHitting == true && player_movement->IsGrounded() && isjumping == false && player_movement->GetDirX() != 0) {
+			board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
+			board->draw_InPosition(player_movement->GetX() + player_movement->GetDirX(), player_movement->GetY(), hammer_char);
+		}
+		//If he isnt attacking, just print the hammer above his head
+		else {
+			board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, hammer_char);
+		}
+	}
+}
+
+void Mario::eraseHammer() {
+
+	char oGchar = board->getOgChar(player_movement->GetX(), player_movement->GetY() - 1);
+	if (has_hammer() && player_movement->GetDirX() != 0) {
+		board->draw_InPosition(player_movement->GetX(), player_movement->GetY() - 1, oGchar);
+		isHitting = false;
+	}
+}
+
+

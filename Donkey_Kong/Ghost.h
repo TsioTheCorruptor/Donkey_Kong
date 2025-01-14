@@ -8,6 +8,7 @@
 class Ghost : public Pointmovement {
 
 	char ghost_char = 'x';
+	char playerChar = '@';
 	Board* pBoard = nullptr;
 	bool spawned = true;
 	static constexpr char collisions[] = { '@','Q','<','=','>','x'};
@@ -16,8 +17,8 @@ class Ghost : public Pointmovement {
 	
 public:
 
-	Ghost(const char move_char, int posx, int posy, Board& board) :
-		Pointmovement(move_char, posx, posy, board), pBoard(&board) {}
+	Ghost(const char move_char, int posx, int posy, Board& board, char player_char) :
+		Pointmovement(move_char, posx, posy, board), pBoard(&board),playerChar(player_char ) {}
 
 	void checkAndMoveGhost();
 
@@ -44,4 +45,6 @@ public:
 	void changeGhostsAligning(const char colliders[]);
 
 	bool IsCollidingGhostClass(const char colliders[], int length, int xpos, int ypos) const;
+
+	bool checkGhostHit(Pointmovement mario) const;
 };

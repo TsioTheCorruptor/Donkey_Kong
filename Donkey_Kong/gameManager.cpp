@@ -15,7 +15,7 @@ void Game::level_1() {
 
 		//Every "barrel_waitTime" iterations create a new barrel 
 		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
-			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard));
+			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
 			curr_barrel_waitTime = 0;
 		}
 		//in this part of the loop,we print the moving objects according to their positions
@@ -49,11 +49,28 @@ void Game::level_1() {
 				pBoard.printPause();
 				pause_game = true;
 			}
-			player.keyPressed(key);
+			//Only activate when Mario is on floor
+			else if (player_point.IsGrounded() && (key == PlayableChars[int(PlayableChar::hammer_char)] || key == 'P')) {
+				player.set_hitting(true);
+				usedHammer = true;
+			}
+			else {
+				player.keyPressed(key);
+			}
 			PauseGame();
 		}
+		//Draw the hammer above Mario (if he has it) or beside him (if he attacks)
+		player.drawHammer();
 		//delay per iteration(may be specific per level)
 		Sleep(iterationTime);
+		//Check all ghosts and barrels if colided with the hammer
+		if (usedHammer == true) {
+			checkAllGhostsIfHit(player_point);
+			checkAllBarrelsIfHit(player_point);
+			usedHammer = false;
+		}
+		//Erase the hammer after the sleep
+		player.eraseHammer();
 		//check according to player input which move mario will do
 		player.DoMarioMoves(key);
 		//check collisions with barrels again
@@ -148,24 +165,18 @@ void Game::FallDamageTaken(Pointmovement player_movement){
 	}
 }
 void Game::PauseGame(){
+
 	char key;
-	while (pause_game == true)
-//be in this while loop until player wants to exit pause,when exiting pause continues the game normally
-	{
-
-		if (_kbhit())
-		{
-
+	//be in this while loop until player wants to exit pause,when exiting pause continues the game normally
+	while (pause_game == true){
+		if (_kbhit()){
 			key = _getch();
-			if (key == ESC)
-			{
+			if (key == ESC){
 				pBoard.print();
 				PrintLives();
 				pause_game = false;
 				std::cout.flush();
-
 			}
-
 		}
 	}
 }
@@ -195,18 +206,18 @@ void Game::inMenu() {
 		//the menu options
 		if (_kbhit()){
 			key = _getch();
-			if (key == '1'){
+			if (key == enterGame){
 				inmenu = false;
 				//switchedLevelSelect = false;
 				//getLevelInput();
 				//if(!switchedLevelSelect)
 				currstate = gameState::get_levelInput;
 			}
-			if (key == '9'){
+			if (key == exitGame){
 				inmenu = false;
 				currstate = gameState::exit_game;
 			}
-			if (key == '8'){
+			if (key == viewInstructions){
 				//print instructions only once per menu entry if required
 				if (!printed_instructions)
 				pBoard.printInstructions();
@@ -244,14 +255,12 @@ void Game::PrintLives() const{
 }
 void Game::ResetLevel(){
 
-	
+	pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[7]);
 	barrel.clear();
-	
 	resetGhosts();
 	pBoard.reset();
 	pBoard.print();
 	printGameInfo();
-	
 }
 void Game::MoveBarrels(Pointmovement player_movement){
 	for (auto it = barrel.begin(); it != barrel.end();) {
@@ -282,6 +291,24 @@ void Game::MoveGhosts() {
 		ghost[i].checkAndMoveGhost();
 	}
 }
+void Game::checkAllGhostsIfHit(Pointmovement player_point) {
+
+	for (int i = 0; i < ghost.size(); ++i) {
+		//If a ghost got hit by the hammer, remove it from the vector
+		if (ghost[i].checkGhostHit(player_point)) {
+			ghost.erase(ghost.begin() + i);
+		}
+	}
+}
+void Game::checkAllBarrelsIfHit(Pointmovement player_point) {
+
+	for (int i = 0; i < barrel.size(); ++i) {
+		//If a barrel got hit by the hammer, remove it from the vector
+		if (barrel[i].checkBarrelHit(player_point)) {
+			barrel.erase(barrel.begin() + i);
+		}
+	}
+}
 void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
 	namespace fs = std::filesystem;
 	for (const auto& entry : fs::directory_iterator(fs::current_path())) {
@@ -303,53 +330,63 @@ bool Game::getBoardData() {
 	char chr = ' ';
 	
 	//chnge magic numbers
-	for (int row = 0; row < 25; row++){
-		for (int col = 0; col < 80; col++){
+	for (int row = 0; row < rowMax; row++){
+		for (int col = 0; col < colMax; col++){
 			currcoord = { col,row };
 			chr = pBoard.getOgChar(col,row );
 			switch (chr){
-			case PlayableChars[ int(PlayableChar::player_char)] :
-				if (PCharsAmount[int(PlayableChar::player_char)] < 1)
-					playerStart = currcoord;
-				pBoard.setChar(col,row , ' '); 
-				pBoard.setOgChar(col,row , ' '); 
-				PCharsAmount[int(PlayableChar::player_char)]++;
-				break;
-			case PlayableChars[int(PlayableChar::dk_char)]:
-				if (PCharsAmount[int(PlayableChar::dk_char)] < 1)
-					barrelStart = currcoord;
-				else{
-					pBoard.setChar(col,row , ' ');
-					pBoard.setOgChar(col,row , ' ');
-				}	
-                PCharsAmount[int(PlayableChar::dk_char)]++;
-				break;
-			case PlayableChars[int(PlayableChar::ghost_char)]:
-				PCharsAmount[int(PlayableChar::ghost_char)]++;
-				//ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], col, row, pBoard, pBoard));
-				ghostStart.emplace_back(currcoord);
-				pBoard.setChar(col, row, ' ');
-				pBoard.setOgChar(col, row, ' ');
-				break;
-			case PlayableChars[int(PlayableChar::pauline_char)]:
-				if (PCharsAmount[int(PlayableChar::pauline_char)] < 1)
-					paulineCoord = currcoord;
-				else {
+				case PlayableChars[ int(PlayableChar::player_char)] :
+					if (PCharsAmount[int(PlayableChar::player_char)] < 1)
+						playerStart = currcoord;
+					pBoard.setChar(col,row , ' '); 
+					pBoard.setOgChar(col,row , ' '); 
+					PCharsAmount[int(PlayableChar::player_char)]++;
+					break;
+				case PlayableChars[int(PlayableChar::dk_char)]:
+					if (PCharsAmount[int(PlayableChar::dk_char)] < 1)
+						barrelStart = currcoord;
+					else{
+						pBoard.setChar(col,row , ' ');
+						pBoard.setOgChar(col,row , ' ');
+					}	
+					PCharsAmount[int(PlayableChar::dk_char)]++;
+					break;
+				case PlayableChars[int(PlayableChar::ghost_char)]:
+					PCharsAmount[int(PlayableChar::ghost_char)]++;
+					//ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], col, row, pBoard, pBoard));
+					ghostStart.emplace_back(currcoord);
 					pBoard.setChar(col, row, ' ');
 					pBoard.setOgChar(col, row, ' ');
+					break;
+				case PlayableChars[int(PlayableChar::pauline_char)]:
+					if (PCharsAmount[int(PlayableChar::pauline_char)] < 1)
+						paulineCoord = currcoord;
+					else {
+						pBoard.setChar(col, row, ' ');
+						pBoard.setOgChar(col, row, ' ');
 
-				}
-				PCharsAmount[int(PlayableChar::pauline_char)]++;
-				break;
-			case PlayableChars[int(PlayableChar::legend_char)]:
+					}
+					PCharsAmount[int(PlayableChar::pauline_char)]++;
+					break;
+				case PlayableChars[int(PlayableChar::legend_char)]:
 				
-				if (PCharsAmount[int(PlayableChar::legend_char)] < 1) {
-				legendCoord = currcoord;
-				pBoard.setChar(col, row, ' ');
-				pBoard.setOgChar(col, row, ' ');
-				}
-				PCharsAmount[int(PlayableChar::legend_char)]++;
-				break;
+					if (PCharsAmount[int(PlayableChar::legend_char)] < 1) {
+					legendCoord = currcoord;
+					pBoard.setChar(col, row, ' ');
+					pBoard.setOgChar(col, row, ' ');
+					}
+					PCharsAmount[int(PlayableChar::legend_char)]++;
+					break;
+				case PlayableChars[int(PlayableChar::hammer_char)]:
+					if (PCharsAmount[int(PlayableChar::hammer_char)] < 1)
+						hammerCoord = currcoord;
+					else {
+						pBoard.setChar(col, row, ' ');
+						pBoard.setOgChar(col, row, ' ');
+
+					}
+					PCharsAmount[int(PlayableChar::hammer_char)]++;
+					break;
 			}
 		}
 	}
@@ -383,7 +420,7 @@ void Game::resetGhosts(){
 	int k = PCharsAmount[int(PlayableChar::ghost_char)];
 	for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++){
 		StartCoord ghostPos = ghostStart[i];
-		ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard));
+		ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
 	}
 }
 void Game::getLevelInput(){
@@ -426,9 +463,7 @@ void Game::getLevelInput(){
 						strcpy(inputDisplay, resetinputDisplay);
 						Sleep(resetdelay);
 						printLevelInput(inputDisplay);
-
 					}
-						
 					//break;
 				}
 			}
@@ -502,7 +537,7 @@ void Game::printGameInfo() const
 {
 	gotoxy(legendCoord.x, legendCoord.y);
 	std::cout << "Health: " <<lives;
-	gotoxy(legendCoord.x, legendCoord.y+1);
+	gotoxy(legendCoord.x, legendCoord.y + 1);
 	std::cout << "Level: " << currLevel;
 	gotoxy(legendCoord.x, legendCoord.y + 2);
 	std::cout << "Time: " << GameTime;
