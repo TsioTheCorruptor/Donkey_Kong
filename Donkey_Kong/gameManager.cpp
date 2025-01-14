@@ -288,7 +288,6 @@ void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
 		auto filename = entry.path().filename();
 		auto filenameStr = filename.string();
 		if (filenameStr.substr(0, 5) == "dkong" && filename.extension() == ".screen") {
-			std::cout << " ^ added!!\n";
 			vec_to_fill.push_back(filenameStr);
 		}
 	}
@@ -362,19 +361,19 @@ void Game::printErrors() {
 	gotoxy(0, 0);
 	switch (int(currError)){
 		case int(errorType::not_found) :
-			std::cout << "error loading level!,returning to menu";
-			currstate = gameState::menu;
-			Sleep(2000);
+			std::cout << "error loading level!,returning to level select";
+			currstate = gameState::get_levelInput;
+			Sleep(Error_screentime);
 			break;
 		case int(errorType::bad_board) :
-			std::cout << "necessary level elements missing!,returning to menu";
-			currstate = gameState::menu;
-			Sleep(2000);
+			std::cout << "necessary level elements missing!,returning to level select";
+			currstate = gameState::get_levelInput;
+			Sleep(Error_screentime);
 			break;
 		case int(errorType::general) :
 			std::cout << "error!,returning to menu";
 			currstate = gameState::menu;
-			Sleep(2000);
+			Sleep(Error_screentime);
 			break;
 	}
 }  
@@ -389,7 +388,8 @@ void Game::resetGhosts(){
 }
 void Game::getLevelInput(){
 	StartCoord printInputText = { 33,18 };
-	int maxfiles = 30;
+	StartCoord printInstructions = { 36,22 };
+
 	int currinputIndex = 0;
 	char inputDisplay[3] = "XX";
 	char resetinputDisplay[3] = "XX";
@@ -397,6 +397,8 @@ void Game::getLevelInput(){
 	pBoard.printEmpty();
 	gotoxy(printInputText.x, printInputText.y);
 	std::cout << "Enter Level Input";
+	gotoxy(printInstructions.x, printInstructions.y);
+	std::cout << "<-A   D->";
 	printLevelInput(inputDisplay);
 	gotoxy(0, 0);
 	
@@ -404,16 +406,13 @@ void Game::getLevelInput(){
 	int resetdelay = 200;
 	
 	fileamount = boardfileNames.size();
-	if (fileamount > 0&&fileamount<maxfiles) {
+	if (fileamount > 0) {
 		printFileNames();	
 		while (true){
 			if (_kbhit()){
 				char key = _getch();
-				if (key == 'D') {
-					currstate = gameState::get_levelInput;
-					
-					return;
-				}
+				if (switchLevelScreen(key))
+					break;
 				if (key - '0'+1 >= 1 && key - '0' <= fileamount) {
 					//currLevel = key - '0'-1;
 					inputDisplay[currinputIndex] = key;
@@ -421,7 +420,7 @@ void Game::getLevelInput(){
 					currinputIndex++;
 					if (currinputIndex == 2) {
 						currinputIndex = 0;
-						if (checkLevelInput(inputDisplay, fileamount))
+						if (checkLevelInput(inputDisplay, getFileIndexend(fileamount)))
 							break;
                         #pragma warning(suppress : 4996) // to allow strcpy
 						strcpy(inputDisplay, resetinputDisplay);
@@ -438,9 +437,6 @@ void Game::getLevelInput(){
 	else {
 		if(fileamount<=0)
 		std::cout << "no levels found!";
-		else if(fileamount>maxfiles)
-		std::cout << "too many levels!";
-
 		Sleep(Error_screentime);
 	} 
 }
@@ -476,7 +472,7 @@ bool Game::checkLevelInput(char input[], int fileamount){
 	if (inputnum <= fileamount-1 && inputnum >= 0)
 	{
 		currstate = gameState::level_select;
-		currLevel = inputnum;
+		currLevel = inputnum+getFileIndexStart();
 		return true;
 	}
 	return false;
@@ -486,15 +482,19 @@ void Game::printFileNames() {
 	const char pressXstr[] = "  ->press";
 	int filelength = strlen(boardfileNames[0].c_str());
 	int pressXstrlength = strlen(pressXstr);
+	int startindex = getFileIndexStart();
+	int endindex = getFileIndexend(fileamount);
+	int inputIndex = 0;
 	
 	
-		for (int i = 0; i < fileamount; i++) {
+		for (int i = startindex; i < endindex+startindex; i++) {
 			if (printcount == 11) {
 				printcount = 0;
 				gotoxy(filelength + pressXstrlength + 3, 0);
 			}
-			std::cout << boardfileNames[i] << pressXstr << int(i / 10) << i % 10 << '\n';
+			std::cout << boardfileNames[i] << pressXstr << int(inputIndex / 10) << inputIndex % 10 << '\n';
 			printcount++;
+			inputIndex++;
 		}
 	
 }
@@ -517,5 +517,35 @@ void Game::printTimeScore() {
 	}
 
 
+}
+const int Game::getFileIndexStart()const
+{
+	return maxFilesPerScreen * levelSelectScreenIndex;
+}
+const int Game::getFileIndexend(int fileamount)const
+{
+	int startindex = getFileIndexStart();
+	if (fileamount - startindex <= maxFilesPerScreen)
+		return fileamount - startindex;
+	else
+		return maxFilesPerScreen;
+}
+bool Game::switchLevelScreen(char key)
+{
+	fileamount = boardfileNames.size();
+	int maxright = fileamount / maxFilesPerScreen;
+	if (key == 'D'&&levelSelectScreenIndex<maxright) {
+		currstate = gameState::get_levelInput;
+		levelSelectScreenIndex++;
+
+		return true;
+	}
+	if (key == 'A'&&levelSelectScreenIndex>0) {
+		currstate = gameState::get_levelInput;
+		levelSelectScreenIndex--;
+
+		return true;
+	}
+	return false;
 }
 

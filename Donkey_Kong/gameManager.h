@@ -27,6 +27,7 @@ class Game {
 	
 	static constexpr int ESC = 27;
 	//game parameters
+	int maxFilesPerScreen = 7;
 	int levelSelectScreenIndex = 0;
 	const int iterationTime = 80;
 	const int iterationUntilSec = (1000 / iterationTime)+1;
@@ -82,10 +83,13 @@ public:
 	void MoveGhosts();
 	void checkGhostsColliding();
 	void printFileNames();
+    const int getFileIndexStart() const;
+    const int getFileIndexend(int fileamount)const;
 	void printTimeScore();
 	void printGameInfo() const;
 	void printLevelInput(char inputstr[]) const;
 	bool checkLevelInput(char input[], int fileamount);
+	bool switchLevelScreen(char key);
 	void DamageTaken(Pointmovement player_movement);
 	void FallDamageTaken(Pointmovement player_movement);
 	void ExplosionDamageTaken(int barrelx, int barrely, Pointmovement player_movement);
