@@ -255,12 +255,14 @@ void Game::PrintLives() const{
 }
 void Game::ResetLevel(){
 
-	pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[7]);
+	if (PCharsAmount[int(PlayableChar::hammer_char)] != 0)
+		pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[int(PlayableChar::hammer_char)]);
 	barrel.clear();
 	resetGhosts();
 	pBoard.reset();
 	pBoard.print();
 	printGameInfo();
+
 }
 void Game::MoveBarrels(Pointmovement player_movement){
 	for (auto it = barrel.begin(); it != barrel.end();) {
