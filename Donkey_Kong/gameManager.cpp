@@ -1,7 +1,7 @@
 
 
 #include "gameManager.h"
-void Game::level_1() {
+void Game::level() {
 	
 	ShowConsoleCursor(false);
 	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
@@ -95,7 +95,7 @@ void Game::main_game(){
 	while (true){
 		switch (int(currstate)){
 			case int(gameState::level) :
-				level_1();
+				level();
 				break;
 			case int(gameState::level_select) :	
 				LevelSelect();
@@ -173,7 +173,7 @@ void Game::PauseGame(){
 			key = _getch();
 			if (key == ESC){
 				pBoard.print();
-				PrintLives();
+				printGameInfo();
 				pause_game = false;
 				std::cout.flush();
 			}
@@ -249,10 +249,7 @@ bool Game::IsPaulineReached(Pointmovement player_movement){
 	}
 	return false;
 }
-void Game::PrintLives() const{
-	gotoxy(health_displayX, health_displayY);
-	std::cout << lives;
-}
+
 void Game::ResetLevel(){
 
 	pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[7]);
@@ -321,17 +318,19 @@ void Game::getAllBoardFileNames(std::vector<std::string>&vec_to_fill) {
 	if (vec_to_fill.empty()) {
 		std::cout << "No matching board files found in the current directory." << std::endl;
 	}
-	fileamount = boardfileNames.size();
+	fileamount =int( boardfileNames.size());
 }
 bool Game::getBoardData() {
 
-	memset(PCharsAmount, 0, sizeof(PCharsAmount));
+	memset(PCharsAmount, 0, sizeof(PCharsAmount)); //reset array of playable char count
 	StartCoord currcoord;
 	char chr = ' ';
+	int RowMax = pBoard.getMAX_Y();
+	int ColMax = pBoard.getMAX_X();
 	
-	//chnge magic numbers
-	for (int row = 0; row < rowMax; row++){
-		for (int col = 0; col < colMax; col++){
+	//check for the playable chars on the board and act accordingely
+	for (int row = 0; row < RowMax; row++){
+		for (int col = 0; col < ColMax; col++){
 			currcoord = { col,row };
 			chr = pBoard.getOgChar(col,row );
 			switch (chr){
@@ -389,14 +388,14 @@ bool Game::getBoardData() {
 					break;
 			}
 		}
-	}
+	}//cases in which board is a faulty board
 	if (PCharsAmount[int(PlayableChar::player_char)] == 0 || PCharsAmount[int(PlayableChar::pauline_char)] == 0|| PCharsAmount[int(PlayableChar::legend_char)] == 0)
 		return false;
 	return true;
  }
 void Game::printErrors() {
 	gotoxy(0, 0);
-	switch (int(currError)){
+	switch (int(currError)){//print game errors acoording to error state
 		case int(errorType::not_found) :
 			std::cout << "error loading level!,returning to level select";
 			currstate = gameState::get_levelInput;
@@ -416,7 +415,7 @@ void Game::printErrors() {
 }  
 void Game::resetGhosts(){
 
-	ghost.clear();
+	ghost.clear();//reset ghosts to original position
 	int k = PCharsAmount[int(PlayableChar::ghost_char)];
 	for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++){
 		StartCoord ghostPos = ghostStart[i];
@@ -424,6 +423,9 @@ void Game::resetGhosts(){
 	}
 }
 void Game::getLevelInput(){
+	//this function sets the level chosen by the player
+
+	//set up the screen
 	StartCoord printInputText = { 33,18 };
 	StartCoord printInstructions = { 36,22 };
 
@@ -442,29 +444,29 @@ void Game::getLevelInput(){
 	
 	int resetdelay = 200;
 	
-	fileamount = boardfileNames.size();
+	fileamount =int( boardfileNames.size());//print each file 
 	if (fileamount > 0) {
 		printFileNames();	
 		while (true){
 			if (_kbhit()){
 				char key = _getch();
-				if (switchLevelScreen(key))
+				if (switchLevelScreen(key))//check if player has switched screen
 					break;
-				if (key - '0'+1 >= 1 && key - '0' <= fileamount) {
-					//currLevel = key - '0'-1;
+				if (key - '0'+1 >= 1 && key - '0' <= '9'-'0') {
+					
 					inputDisplay[currinputIndex] = key;
-					printLevelInput(inputDisplay);
+					printLevelInput(inputDisplay);//print the input entered by player
 					currinputIndex++;
 					if (currinputIndex == 2) {
 						currinputIndex = 0;
-						if (checkLevelInput(inputDisplay, getFileIndexend(fileamount)))
+						if (checkLevelInput(inputDisplay, getFileIndexend(fileamount)))//check if the input is a level
 							break;
                         #pragma warning(suppress : 4996) // to allow strcpy
 						strcpy(inputDisplay, resetinputDisplay);
 						Sleep(resetdelay);
 						printLevelInput(inputDisplay);
 					}
-					//break;
+					
 				}
 			}
 		}
@@ -476,7 +478,7 @@ void Game::getLevelInput(){
 	} 
 }
 void Game::LevelSelect() {
-
+	//check if level is correct,i f it is start the level
 	if (fileamount > 0) {
 		if (!pBoard.load(boardfileNames[currLevel])) {
 			currError = errorType::not_found;
@@ -514,18 +516,20 @@ bool Game::checkLevelInput(char input[], int fileamount){
 }
 void Game::printFileNames() {
 	int printcount = 0;
-	const char pressXstr[] = "  ->press";
-	int filelength = strlen(boardfileNames[0].c_str());
-	int pressXstrlength = strlen(pressXstr);
+	const char pressXstr[] = "->press";
+	int filelength = int(strlen(boardfileNames[0].c_str()));
+	int pressXstrlength = int(strlen(pressXstr));
 	int startindex = getFileIndexStart();
 	int endindex = getFileIndexend(fileamount);
 	int inputIndex = 0;
+	int spaceBetweenRowFiles = 3;
 	
 	
 		for (int i = startindex; i < endindex+startindex; i++) {
+			//print in sets of 10
 			if (printcount == 11) {
 				printcount = 0;
-				gotoxy(filelength + pressXstrlength + 3, 0);
+				gotoxy(filelength + pressXstrlength + spaceBetweenRowFiles, 0);
 			}
 			std::cout << boardfileNames[i] << pressXstr << int(inputIndex / 10) << inputIndex % 10 << '\n';
 			printcount++;
@@ -567,15 +571,17 @@ const int Game::getFileIndexend(int fileamount)const
 }
 bool Game::switchLevelScreen(char key)
 {
-	fileamount = boardfileNames.size();
+	fileamount = int(boardfileNames.size());
 	int maxright = fileamount / maxFilesPerScreen;
-	if (key == 'D'&&levelSelectScreenIndex<maxright) {
+	if (fileamount % maxFilesPerScreen == 0)
+		maxright--;
+	if (tolower(key) == GoRight_LevelSelect && levelSelectScreenIndex<maxright) {
 		currstate = gameState::get_levelInput;
 		levelSelectScreenIndex++;
 
 		return true;
 	}
-	if (key == 'A'&&levelSelectScreenIndex>0) {
+	if (tolower( key) == GoLeft_LevelSelect && levelSelectScreenIndex>0) {
 		currstate = gameState::get_levelInput;
 		levelSelectScreenIndex--;
 

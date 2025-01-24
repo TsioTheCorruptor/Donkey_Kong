@@ -178,6 +178,8 @@ public:
 	void setChar(int x,int y,char chartoset){
 		currentBoard[y][x] = chartoset;
 	}
+	const	int getMAX_X()const { return MAX_X; }
+	const	int getMAX_Y()const { return MAX_Y; }
 };
 
 

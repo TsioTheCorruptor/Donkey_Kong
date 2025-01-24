@@ -13,7 +13,7 @@ class Ghost : public Pointmovement {
 	bool spawned = true;
 	static constexpr char collisions[] = { '@','Q','<','=','>','x'};
 	static constexpr  int col_length = 6;
-	enum coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost};//order has to stay
+	enum class coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost};//order has to stay
 	
 public:
 

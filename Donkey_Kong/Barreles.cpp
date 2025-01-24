@@ -38,7 +38,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 	char rightchar = pBoard->getChar(GetX() - 1, GetY());
 
 	//If the barrel hits a '<' floor, move left and save its direction
-	if (colliders[floor_left] == floorchar) {
+	if (colliders[int(coll_hit:: floor_left)] == floorchar) {
 		set_dir(-1, 0, false);
 		prev_dirX = -1;
 		prev_dirY = 0;
@@ -49,7 +49,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		}
 	}
 	//If the barrel hits a '>' floor, move right and save its direction
-	else if (colliders[floor_right] == floorchar) {
+	else if (colliders[int(coll_hit::floor_right)] == floorchar) {
 		set_dir(1, 0,false);
 		prev_dirX = 1;
 		prev_dirY = 0;
@@ -60,7 +60,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		}
 	}
 	//If the barrel hits a '=' floor, stay or move at the saved direction
-	else if (colliders[neutral_floor] == floorchar){
+	else if (colliders[int(coll_hit::neutral_floor)] == floorchar){
 		if(prev_dirX!=0)
 		set_dir(prev_dirX, prev_dirY,false);
 		else{
@@ -76,7 +76,7 @@ void Barrel::getBarrelDir(const char colliders[]) {
 		}
 	}
 	//if barrel hits wall,it explodes
-	if (colliders[wall] == leftchar || colliders[wall] == rightchar) {
+	if (colliders[int(coll_hit::wall)] == leftchar || colliders[int(coll_hit::wall)] == rightchar) {
 		stop_movement = true;
 		set_barrel_char(explosion_char);
 		SetMovementChar(explosion_char);

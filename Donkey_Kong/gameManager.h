@@ -24,15 +24,15 @@ class Game {
 	StartCoord playerStart,barrelStart,paulineCoord,legendCoord,hammerCoord;
 	std::vector <StartCoord> ghostStart;
 	char PCharsAmount[PcharCount] = {};
-	
+	const char GoRight_LevelSelect = 'd';
+	const char GoLeft_LevelSelect = 'a';
 	const char enterGame = '1';
 	const char viewInstructions = '8';
 	const char exitGame = '9';
 	static constexpr int ESC = 27;
 	//game parameters
-	const int rowMax = 25;
-	const int colMax = 80;
-	int maxFilesPerScreen = 7;
+	
+	int maxFilesPerScreen = 30;
 	int levelSelectScreenIndex = 0;
 	const int iterationTime = 80;
 	const int iterationUntilSec = (1000 / iterationTime)+1;
@@ -50,9 +50,7 @@ class Game {
     bool pause_game = false;
 	bool printed_instructions = false;//check if already printed instructions
 	//health pos in board
-	static constexpr int  health_displayX = 76;
-	static constexpr int  health_displayY = 2;
-	int barrel_waitTime = 15;
+	int barrel_waitTime = 20;
 	int curr_barrel_waitTime = barrel_waitTime;
 	//screen time of specific boards
 	const int GO_screentime = 2000;
@@ -75,11 +73,10 @@ class Game {
 public:
 
 	void main_game();
-	void level_1();
+	void level();
 	void PauseGame();
 	bool HealthCheck();
 	void inMenu();
-    void PrintLives() const;
 	void ResetLevel();
 	void resetGhosts();
 	void printErrors();

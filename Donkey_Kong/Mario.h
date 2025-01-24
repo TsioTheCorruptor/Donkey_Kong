@@ -43,8 +43,8 @@ class Mario {
 
 	static constexpr char collisions[4] = { 'Q','<','=','>'};//mario collisions
 	static constexpr int col_length = 4;
-	enum move_type {no_moves,jumping,ladder};//mario states
-	move_type curr_move = no_moves;
+	enum class move_type {no_moves,jumping,ladder};//mario states
+	move_type curr_move =move_type:: no_moves;
 
 public:
 	

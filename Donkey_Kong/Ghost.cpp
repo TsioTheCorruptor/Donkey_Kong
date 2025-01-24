@@ -18,12 +18,12 @@ void Ghost::changeGhostsAligning(const char colliders[]) {
 	int newDirX = GetDirX() * -1;
 	//Check for ghosts on the left
 	if (GetDirX() == 1) {
-		if (colliders[ghost] == leftchar || colliders[ghost] == leftchar2)
+		if (colliders[int(coll_hit::ghost)] == leftchar || colliders[int(coll_hit::ghost)] == leftchar2)
 			set_dir(newDirX, 0, false);
 	}
 	//Check for ghosts on the right
 	else {
-		if (colliders[ghost] == rightchar || colliders[ghost] == rightchar2) {
+		if (colliders[int(coll_hit::ghost)] == rightchar || colliders[int(coll_hit::ghost)] == rightchar2) {
 			set_dir(newDirX, 0, false);
 		}
 	}
@@ -37,7 +37,7 @@ void Ghost::getGhostDir(const char colliders[]) {
 	char rightedge = pBoard->getChar(GetX() - 1, GetY() + 1);
 
 	//Get an array of colliders for easier checks
-	const char objectCol[] = { colliders[wall], colliders[ghost] };
+	const char objectCol[] = { colliders[int(coll_hit::wall)], colliders[int(coll_hit::wall)] };
 	int objectColLen = 2;
 
 	//If the direction is 0, make the ghost move right, then begin checking the other collisions
@@ -68,7 +68,7 @@ void Ghost::getGhostDir(const char colliders[]) {
 	//If the ghost moves left
 	else if (GetDirX() == -1) {
 		//If there is a ledge or a wall change dir
-		if (rightedge == ' ' || colliders[wall] == rightchar) {
+		if (rightedge == ' ' || colliders[int(coll_hit::wall)] == rightchar) {
 			set_dir(newDirX, 0, false);
 		}
 		//Else, random the movement
@@ -81,7 +81,7 @@ void Ghost::getGhostDir(const char colliders[]) {
 	//If the ghost moves right
 	else if (GetDirX() == 1) {
 		//If there is a ledge or a wall change dir
-		if (leftedge == ' ' || colliders[wall] == leftchar) {
+		if (leftedge == ' ' || colliders[int(coll_hit::wall)] == leftchar) {
 			set_dir(newDirX, 0, false);
 		}
 		//Else, random the movement
