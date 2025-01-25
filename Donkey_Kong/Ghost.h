@@ -7,20 +7,23 @@
 
 class Ghost : public Pointmovement {
 
-	char ghost_char = 'x';
+protected:
+	char ghost_char = 'x'; // Default ghost character
 	char playerChar = '@';
 	Board* pBoard = nullptr;
 	bool spawned = true;
-	static constexpr char collisions[] = { '@','Q','<','=','>','x'};
-	static constexpr  int col_length = 6;
-	enum class coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost};//order has to stay
+
+private:
+	static constexpr char collisions[] = { '@','Q','<','=','>','x','X'};
+	static constexpr  int col_length = 7;
+	enum class coll_hit { player, wall, floor_left, neutral_floor, floor_right, ghost, climbing_ghost};//order has to stay
 	
 public:
 
 	Ghost(const char move_char, int posx, int posy, Board& board, char player_char) :
 		Pointmovement(move_char, posx, posy, board), pBoard(&board),playerChar(player_char ) {}
 
-	void checkAndMoveGhost();
+	virtual void checkAndMoveGhost();
 
 	void getGhostDir(const char colliders[]);
 

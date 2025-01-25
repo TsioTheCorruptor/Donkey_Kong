@@ -2,14 +2,17 @@
 #include "Board.h"
 #include "utils.h"
 #include "movement.h"
+#include "Abilities.h"
 #include "Mario.h"
 #include "Barreles.h"
 #include "Ghost.h"
+#include "ClimbingGhost.h"
 #include <cstring>
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <vector>
+#include <memory>
 #include <fstream>
 #include <filesystem>
 #include <string>
@@ -18,11 +21,15 @@
 class Game {
 	//const chars
 	struct StartCoord { int x=10, y=22; }; // inner private struct
-	static constexpr int PcharCount = 8;
-	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','L','p'};
-	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,legend_char, hammer_char };
+	struct GhostInfo { char type; StartCoord position; GhostInfo(char ghostType, const StartCoord& pos)
+		: type(ghostType), position(pos) {} };
+	static constexpr int PcharCount = 9;
+	static constexpr char PlayableChars[] = { '@','$','&','H','O','x','X','L','p'};
+	enum class PlayableChar { player_char, pauline_char,dk_char, ladder_char, barrel_char, ghost_char,climbing_ghost_char,legend_char, hammer_char };
 	StartCoord playerStart,barrelStart,paulineCoord,legendCoord,hammerCoord;
-	std::vector <StartCoord> ghostStart;
+	//std::vector <StartCoord> ghostStart;
+	std::vector<GhostInfo> ghostData;
+	//std::vector <StartCoord> climbingGhostStart;
 	char PCharsAmount[PcharCount] = {};
 	const char GoRight_LevelSelect = 'd';
 	const char GoLeft_LevelSelect = 'a';
@@ -63,12 +70,14 @@ class Game {
 	enum class errorType{not_found,bad_board,general};
 	errorType currError = errorType::general;
 	std::vector <Barrel> barrel;
-	std::vector <Ghost> ghost;
+	//std::vector <Ghost> ghost;
+	std::vector<std::unique_ptr<Ghost>> ghost;
+	//std::vector <ClimbingGhost> climbingGhost;
 	std::vector<std::string> boardfileNames;
 	int fileamount = 0;
 	
-	static constexpr char damagecollisions[] = { 'O', 'x'};
-	static const int col_length = 2;
+	static constexpr char damagecollisions[] = { 'O', 'x', 'X'};
+	static const int col_length = 3;
 
 public:
 
@@ -77,15 +86,18 @@ public:
 	void PauseGame();
 	bool HealthCheck();
 	void inMenu();
-	void ResetLevel();
-	void resetGhosts();
+	void ResetLevel(Pointmovement& player_movement);
+	void resetGhosts(Pointmovement& player_movement);
+	void resetClimbingGhosts();
 	void printErrors();
 	void getLevelInput();
 	void LevelSelect();
 	void MoveBarrels(Pointmovement player_movement);
 	void MoveGhosts();
+	void MoveClimbingGhosts(Pointmovement player_movement);
 	void checkGhostsColliding();
 	void checkAllGhostsIfHit(Pointmovement player_point);
+	void checkAllClimbingGhostsIfHit(Pointmovement player_point);
 	void checkAllBarrelsIfHit(Pointmovement player_point);
 	void printFileNames();
     const int getFileIndexStart() const;
