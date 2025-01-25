@@ -39,6 +39,12 @@
     <ClCompile Include="Ghost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Abilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClimbingGhost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameManager.h">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ghost.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Abilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClimbingGhost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

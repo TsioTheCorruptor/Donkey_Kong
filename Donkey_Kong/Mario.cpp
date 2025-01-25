@@ -2,13 +2,13 @@
 
 void  Mario::Jump_InDirection(const Jump_InOrder* order, int length, int currdirx, int currdiry) {
 
-	curr_move=move_type::jumping ;
+	curr_move=move_type::jumping;
 	isjumping = true;
 	//go through every dir in the order array,advence one index per iteration
 	player_movement->set_dir(order[move_stage].x, order[move_stage].y,true);
 	move_stage++;
 	//stop jumping if end of order reached,or if the player collided with something
-	if (move_stage >= length|| player_movement->IsCollidingInNextDir(collisions,col_length)){
+	if (move_stage >= length|| player_movement->IsCollidingInNextDir(player_abilities->GetCollisionArray(), player_abilities->GetCollisionArrayLength())){
 		move_stage = 0;
 		curr_move=move_type::no_moves;
 		isjumping = false;
@@ -32,58 +32,21 @@ void  Mario::Jump() {
 //get mario state according to key pressed and other info
 int  Mario::GetMoveType(char key) {
 	key = tolower(key);
-	bool isgrounded = player_movement->IsCollidingInGround(collisions, col_length);
+	bool isgrounded = player_movement->IsCollidingInGround(player_abilities->GetCollisionArray(), player_abilities->GetCollisionArrayLength());
 	if (key == upkey && isgrounded){
 		curr_move=move_type::jumping;
 	}
 	if (key == upkey && isgrounded && player_movement->GetCurrentBackgroundChar() ==ladder_char){
-		ladder_up = true;
+		player_abilities->set_ladder_up(true);
 		curr_move=move_type::ladder;
 	}
 	if (key == downkey && isgrounded && board->getOgChar(player_movement->GetX(), player_movement->GetY() + 2) == 'H'){
-		ladder_up = false;
+		player_abilities->set_ladder_up(false);
 		curr_move=move_type::ladder;
 	}
 	return int(curr_move);
 }
-void Mario::InLadder(){
-	//if going up the ladder
-	//move up until detecting ceiling(collider above the player)
-	if (ladder_up){
-		bool detected_ceiling = player_movement->IsColliding(collisions, col_length, player_movement->GetX(), player_movement->GetY() - 1);
-		if (detected_ceiling){
-			curr_move=move_type::no_moves;
-			//move two points up to get above floor(if possible)
-			player_movement->set_dir(0, -2,true);
-			player_movement->move(collisions,col_length);
-			//stop moving after going up
-			player_movement->set_dir(0, 0,false);
-		}
-		else player_movement->set_dir(0, -1,true);
-	}
-	//if going down ladder
-	if (!ladder_up){
-		bool detected_ground = false;
-		//go two points down to go below floor
-		if (go_below_ground == false){
-			detected_ground = player_movement->IsColliding(collisions, col_length, player_movement->GetX(), player_movement->GetY() + 2);
-			player_movement->set_dir(0, 2,false);
-			go_below_ground = true;
-		}
-		//after going below ground once,go down until ground
-		else {
-			detected_ground = player_movement->IsCollidingInGround(collisions, col_length);
-			player_movement->set_dir(0, 1,true);
-		}
 
-		//if ground is detected,stop going down ladder
-		if (detected_ground){
-			curr_move=move_type::no_moves;
-			player_movement->set_dir(0, 0,false);
-			go_below_ground = false;
-		}
-	}
-}
 void Mario::DoMarioMoves(int key){
 
 	if (player_movement->GetCurrentBackgroundChar() == hammer_char) {
@@ -93,20 +56,22 @@ void Mario::DoMarioMoves(int key){
 
 	switch (GetMoveType(key)){
 		case int(move_type::no_moves) ://default case
-		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+		player_movement->move(player_abilities->GetCollisionArray(), player_abilities->GetCollisionArrayLength());
 		std::cout.flush();
 		break;
 		case int(move_type::jumping) :
 		Jump();
-		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+		player_movement->move(player_abilities->GetCollisionArray(), player_abilities->GetCollisionArrayLength());
 		//save direction before jumping
 		if (!player_movement->is_dir_0()){
 			player_movement->set_dir(GetSavedDirX(),GetSavedDirY(), false);
 		}
 		break;
 		case int(move_type::ladder) :
-		InLadder();
-		player_movement->move(GetCollisionArray(), GetCollisionArrayLength());
+		if (!(player_abilities->InLadder(player_movement))) {
+				curr_move = move_type::no_moves;
+		}
+		player_movement->move(player_abilities->GetCollisionArray(), player_abilities->GetCollisionArrayLength());
 		break;
 	}
 }
@@ -119,7 +84,6 @@ void Mario::keyPressed(char key) {
 		}
 	}
 }
-
 
 void Mario::drawHammer() {
 

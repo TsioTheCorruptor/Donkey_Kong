@@ -15,15 +15,18 @@ void Ghost::changeGhostsAligning(const char colliders[]) {
 	char leftchar2 = pBoard->getChar(GetX() + 1, GetY());
 	char rightchar2 = pBoard->getChar(GetX() - 1, GetY());
 
+	char ghost1 = colliders[int(coll_hit::ghost)];
+	char ghost2 = colliders[int(coll_hit::climbing_ghost)];
+
 	int newDirX = GetDirX() * -1;
 	//Check for ghosts on the left
 	if (GetDirX() == 1) {
-		if (colliders[int(coll_hit::ghost)] == leftchar || colliders[int(coll_hit::ghost)] == leftchar2)
+		if (ghost1 == leftchar || ghost1 == leftchar2 || ghost2 == leftchar || ghost2 == leftchar2)
 			set_dir(newDirX, 0, false);
 	}
 	//Check for ghosts on the right
 	else {
-		if (colliders[int(coll_hit::ghost)] == rightchar || colliders[int(coll_hit::ghost)] == rightchar2) {
+		if (ghost1 == rightchar || ghost1 == rightchar2 || ghost2 == rightchar || ghost2 == rightchar2) {
 			set_dir(newDirX, 0, false);
 		}
 	}

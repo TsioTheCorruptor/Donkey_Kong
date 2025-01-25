@@ -2,6 +2,7 @@
 #include <iostream>
 #include "movement.h"
 #include "board.h"
+#include "Abilities.h"
 
 class Mario {
 
@@ -11,7 +12,6 @@ class Mario {
 	static constexpr char upkey = 'w';
 	static constexpr char downkey = 'x';
 	struct Jump_InOrder { int x, y; };
-	bool go_below_ground = false;
 	bool hasHammer = false;
  
 	int move_stage = 0;
@@ -27,9 +27,9 @@ class Mario {
 
 	bool isHitting = false;
 	bool isjumping = false;
-	bool ladder_up = true;//going up or down ladder
 	Pointmovement* player_movement = nullptr;
 	Board* board = nullptr;
+	Abilities* player_abilities = nullptr;
 	//save dir for after jump
 	int savedirX = 0;
 	int savedirY = 0;
@@ -41,25 +41,20 @@ class Mario {
 
 	// the directions array order is exactly the same as the keys array - must keep it that way
 
-	static constexpr char collisions[4] = { 'Q','<','=','>'};//mario collisions
-	static constexpr int col_length = 4;
-	enum class move_type {no_moves,jumping,ladder};//mario states
+	enum class move_type {no_moves,jumping,ladder}; //mario states
 	move_type curr_move =move_type:: no_moves;
 
 public:
 	
-	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard ) : 
-		mario_char(player_char),ladder_char(ladder_Char), player_movement(&player_Movement), board(&pBoard) {}
+	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard, Abilities& player_abilities) :
+		mario_char(player_char),ladder_char(ladder_Char), player_movement(&player_Movement), board(&pBoard), player_abilities(&player_abilities){}
 
 	void Jump();
-	void InLadder();
 	void DoMarioMoves(int key);
 	void keyPressed(char key);
     void Jump_InDirection(const Jump_InOrder* order, int length,int currdirx,int currdiey);
 	const int GetSavedDirX()const { return savedirX; }
 	const int GetSavedDirY()const { return savedirY; }
-	const char* GetCollisionArray()const { return collisions; }
-	const int GetCollisionArrayLength()const { return col_length; }
 	bool is_jumping() const{
 		return isjumping;
 	}

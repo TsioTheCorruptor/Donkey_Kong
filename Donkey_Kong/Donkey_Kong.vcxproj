@@ -133,8 +133,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Abilities.cpp" />
     <ClCompile Include="Barreles.cpp" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="ClimbingGhost.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gameManager.cpp" />
@@ -143,8 +145,10 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Abilities.h" />
     <ClInclude Include="Barreles.h" />
     <ClInclude Include="board.h" />
+    <ClInclude Include="ClimbingGhost.h" />
     <ClInclude Include="gameManager.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Mario.h" />

@@ -5,8 +5,10 @@ void Game::level() {
 	
 	ShowConsoleCursor(false);
 	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
+	ResetLevel(player_point);
 	player_point.set_dir(0, 0,false);
-	Mario player(PlayableChars[int(PlayableChar::player_char)], PlayableChars[int(PlayableChar::ladder_char)],player_point,pBoard);
+	Abilities player_abilities(true, false);
+	Mario player(PlayableChars[int(PlayableChar::player_char)], PlayableChars[int(PlayableChar::ladder_char)],player_point,pBoard, player_abilities);
 
 	//each reset,before the game loop
 
@@ -29,7 +31,7 @@ void Game::level() {
 		}
 		//for each ghost,draw it
 		for (auto it = ghost.begin(); it != ghost.end();) {
-			it->draw();
+			(*it)->draw();
 			it++;
 		}
 		//check for fall damage and collision damage with barrels,draw player after checking collisions
@@ -91,7 +93,7 @@ void Game::level() {
 void Game::main_game(){
 
 	getAllBoardFileNames(boardfileNames);
-	std::srand(unsigned int(time(0)));
+	std::srand((int)time(NULL));
 	while (true){
 		switch (int(currstate)){
 			case int(gameState::level) :
@@ -110,7 +112,7 @@ void Game::main_game(){
 			case int(gameState::reset) :
 				currstate = gameState::level;
 				currhealth = health_per_reset;
-				ResetLevel();
+				//ResetLevel();
 				break;
 			case int(gameState::game_over) :
 				currstate = gameState::menu;
@@ -250,16 +252,33 @@ bool Game::IsPaulineReached(Pointmovement player_movement){
 	return false;
 }
 
-void Game::ResetLevel(){
+void Game::ResetLevel(Pointmovement& player_movement){
 
 	if (PCharsAmount[int(PlayableChar::hammer_char)] != 0)
 		pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[int(PlayableChar::hammer_char)]);
 	barrel.clear();
-	resetGhosts();
+	resetGhosts(player_movement);
 	pBoard.reset();
 	pBoard.print();
 	printGameInfo();
 
+}
+
+void Game::resetGhosts(Pointmovement& player_movement) {
+
+	ghost.clear(); //reset ghosts to original position
+	for (int i = 0; i < PCharsAmount[int(PlayableChar::ghost_char)] + PCharsAmount[int(PlayableChar::climbing_ghost_char)]; i++) {
+		StartCoord ghostPos = ghostData[i].position;
+		//If the ghost is small, create a Ghost
+		if (ghostData[i].type == PlayableChars[int(PlayableChar::ghost_char)]) {
+			ghost.emplace_back(std::make_unique<Ghost>(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
+		}
+		//If the ghost is large, create a ClimbingGhost
+		else {
+			Abilities ghost_abilities(true, false);
+			ghost.emplace_back(std::make_unique<ClimbingGhost>(PlayableChars[int(PlayableChar::climbing_ghost_char)], ghostPos.x, ghostPos.y, pBoard, PlayableChars[int(PlayableChar::player_char)], player_movement, ghost_abilities));
+		}
+	}
 }
 void Game::MoveBarrels(Pointmovement player_movement){
 	for (auto it = barrel.begin(); it != barrel.end();) {
@@ -280,21 +299,27 @@ void Game::MoveBarrels(Pointmovement player_movement){
 }
 void Game::checkGhostsColliding() {
 	
+	//check all normal ghosts
 	for (int i = 0; i < ghost.size(); ++i) {
-		ghost[i].ghostCollision();
+		(*ghost[i]).ghostCollision();
 	}
+
+	//check all climbing ghosts
+	/*for (int i = 0; i < climbingGhost.size(); ++i) {
+		climbingGhost[i].ghostCollision();
+	}*/
 }
 void Game::MoveGhosts() {
   
 	for (int i = 0; i < ghost.size(); ++i) {
-		ghost[i].checkAndMoveGhost();
+		(*ghost[i]).checkAndMoveGhost();
 	}
 }
 void Game::checkAllGhostsIfHit(Pointmovement player_point) {
 
 	for (int i = 0; i < ghost.size(); ++i) {
 		//If a ghost got hit by the hammer, remove it from the vector
-		if (ghost[i].checkGhostHit(player_point)) {
+		if ((*ghost[i]).checkGhostHit(player_point)) {
 			ghost.erase(ghost.begin() + i);
 		}
 	}
@@ -354,8 +379,13 @@ bool Game::getBoardData() {
 					break;
 				case PlayableChars[int(PlayableChar::ghost_char)]:
 					PCharsAmount[int(PlayableChar::ghost_char)]++;
-					//ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], col, row, pBoard, pBoard));
-					ghostStart.emplace_back(currcoord);
+					ghostData.emplace_back(PlayableChars[int(PlayableChar::ghost_char)], currcoord);
+					pBoard.setChar(col, row, ' ');
+					pBoard.setOgChar(col, row, ' ');
+					break;
+				case PlayableChars[int(PlayableChar::climbing_ghost_char)]:
+					PCharsAmount[int(PlayableChar::climbing_ghost_char)]++;
+					ghostData.emplace_back(PlayableChars[int(PlayableChar::climbing_ghost_char)], currcoord);
 					pBoard.setChar(col, row, ' ');
 					pBoard.setOgChar(col, row, ' ');
 					break;
@@ -388,6 +418,7 @@ bool Game::getBoardData() {
 					}
 					PCharsAmount[int(PlayableChar::hammer_char)]++;
 					break;
+				
 			}
 		}
 	}//cases in which board is a faulty board
@@ -415,15 +446,6 @@ void Game::printErrors() {
 			break;
 	}
 }  
-void Game::resetGhosts(){
-
-	ghost.clear();//reset ghosts to original position
-	int k = PCharsAmount[int(PlayableChar::ghost_char)];
-	for (int i =0 ;i<PCharsAmount[int(PlayableChar::ghost_char)];i++){
-		StartCoord ghostPos = ghostStart[i];
-		ghost.emplace_back(Ghost(PlayableChars[int(PlayableChar::ghost_char)], ghostPos.x, ghostPos.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
-	}
-}
 void Game::getLevelInput(){
 	//this function sets the level chosen by the player
 
@@ -499,7 +521,7 @@ void Game::LevelSelect() {
 		currstate = gameState::menu;
 	}
 }
-void Game:: printLevelInput(char inputstr[])const {
+void Game::printLevelInput(char inputstr[])const {
 	StartCoord printcoord = { 40,20 };
 	
 	gotoxy(printcoord.x, printcoord.y);
