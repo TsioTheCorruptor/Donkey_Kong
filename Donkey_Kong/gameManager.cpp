@@ -3,18 +3,20 @@
 #include "gameManager.h"
 void Game::level() {
 	
+	
 	ShowConsoleCursor(false);
 	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
 	ResetLevel(player_point);
 	player_point.set_dir(0, 0,false);
 	Abilities player_abilities(true, false);
 	Mario player(PlayableChars[int(PlayableChar::player_char)], PlayableChars[int(PlayableChar::ladder_char)],player_point,pBoard, player_abilities);
-
+	
 	//each reset,before the game loop
 
 	while (true) {
 		printTimeScore();
-
+		if (stopGameLoop())
+			break;
 		//Every "barrel_waitTime" iterations create a new barrel 
 		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
 			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
@@ -45,21 +47,15 @@ void Game::level() {
 			break;
 		char key = ' ';
 		//in this part we will check the player input,we will also determine if pausing the game in required
-		if (_kbhit()) {
-			key = _getch();
-			if (key == ESC){
-				pBoard.printPause();
-				pause_game = true;
-			}
-			//Only activate when Mario is on floor
-			else if (player_point.IsGrounded() && (key == PlayableChars[int(PlayableChar::hammer_char)] || key == 'P')) {
-				player.set_hitting(true);
-				usedHammer = true;
-			}
-			else {
-				player.keyPressed(key);
-			}
-			PauseGame();
+		getPlayerInput(key);
+		
+		//Only activate when Mario is on floor
+		if (player_point.IsGrounded() && (key == PlayableChars[int(PlayableChar::hammer_char)] || key == 'P')) {
+			player.set_hitting(true);
+			usedHammer = true;
+		}
+		else {
+			player.keyPressed(key);
 		}
 		//Draw the hammer above Mario (if he has it) or beside him (if he attacks)
 		player.drawHammer();
@@ -87,20 +83,25 @@ void Game::level() {
 		//move the ghosts
 		MoveGhosts();
 		curr_barrel_waitTime++;	
+		
 	}
+	doAfterLoop();
 }
 //the entire game loop
 void Game::main_game(){
 
 	getAllBoardFileNames(boardfileNames);
-	std::srand((int)time(NULL));
+	
+	
 	while (true){
 		switch (int(currstate)){
 			case int(gameState::level) :
 				level();
 				break;
 			case int(gameState::level_select) :	
+				
 				LevelSelect();
+				seedSrand();
 				break;
 				case int(gameState::get_levelInput) :
 					getLevelInput();
@@ -111,8 +112,9 @@ void Game::main_game(){
 				break;
 			case int(gameState::reset) :
 				currstate = gameState::level;
+				
 				currhealth = health_per_reset;
-				//ResetLevel();
+				
 				break;
 			case int(gameState::game_over) :
 				currstate = gameState::menu;
@@ -143,6 +145,10 @@ void Game::main_game(){
 			case int(gameState::instructions) :
 				pBoard.printInstructions();
 				break;
+				case int(gameState::requestNextLevel) :
+					if (!requestNextLevel())
+						currstate = gameState::exit_game;
+					break;
 		}
 	}
 }
@@ -187,7 +193,7 @@ bool Game::HealthCheck(){
 	
 	if (currhealth <= 0){
 		lives--;
-		if (lives >= 0){
+		if (lives > 0){
 			currstate = gameState::reset;
 			return true;
 		}	
@@ -254,6 +260,7 @@ bool Game::IsPaulineReached(Pointmovement player_movement){
 
 void Game::ResetLevel(Pointmovement& player_movement){
 
+	curr_barrel_waitTime = 0;
 	if (PCharsAmount[int(PlayableChar::hammer_char)] != 0)
 		pBoard.setOgChar(hammerCoord.x, hammerCoord.y, PlayableChars[int(PlayableChar::hammer_char)]);
 	barrel.clear();
@@ -267,6 +274,7 @@ void Game::ResetLevel(Pointmovement& player_movement){
 void Game::resetGhosts(Pointmovement& player_movement) {
 
 	ghost.clear(); //reset ghosts to original position
+	
 	for (int i = 0; i < PCharsAmount[int(PlayableChar::ghost_char)] + PCharsAmount[int(PlayableChar::climbing_ghost_char)]; i++) {
 		StartCoord ghostPos = ghostData[i].position;
 		//If the ghost is small, create a Ghost
@@ -279,6 +287,8 @@ void Game::resetGhosts(Pointmovement& player_movement) {
 			ghost.emplace_back(std::make_unique<ClimbingGhost>(PlayableChars[int(PlayableChar::climbing_ghost_char)], ghostPos.x, ghostPos.y, pBoard, PlayableChars[int(PlayableChar::player_char)], player_movement, ghost_abilities));
 		}
 	}
+	
+
 }
 void Game::MoveBarrels(Pointmovement player_movement){
 	for (auto it = barrel.begin(); it != barrel.end();) {
@@ -354,7 +364,7 @@ bool Game::getBoardData() {
 	char chr = ' ';
 	int RowMax = pBoard.getMAX_Y();
 	int ColMax = pBoard.getMAX_X();
-	
+	ghostData.clear();
 	//check for the playable chars on the board and act accordingely
 	for (int row = 0; row < RowMax; row++){
 		for (int col = 0; col < ColMax; col++){
@@ -444,6 +454,11 @@ void Game::printErrors() {
 			currstate = gameState::menu;
 			Sleep(Error_screentime);
 			break;
+			case int(errorType::LoadMode) :
+				std::cout << "error while playing level in load mode!";
+				currstate = gameState::requestNextLevel;
+				Sleep(Error_screentime);
+				break;
 	}
 }  
 void Game::getLevelInput(){
@@ -571,12 +586,12 @@ void Game::printGameInfo() const
 	std::cout << "Time: " << GameTime;
 }
 void Game::printTimeScore() {
-	iterationCount++;
-	if (iterationCount >= iterationUntilSec) {
+	scoreIterationCount++;
+	if (scoreIterationCount >= iterationUntilSec) {
 		GameTime++;
 		gotoxy(legendCoord.x, legendCoord.y + 2);
 		std::cout << "Time: " << GameTime;
-		iterationCount = 0;
+		scoreIterationCount = 0;
 	}
 
 
@@ -613,4 +628,42 @@ bool Game::switchLevelScreen(char key)
 	}
 	return false;
 }
+bool Game::requestNextLevel()
+{
+	gotoxy(0, 0);
+	pBoard.printEmpty();
+	gotoxy(0, 0);
+	std::cout << "press > to advance to next level or ESC to quit";
+	while (true)
+	{
+		if (_kbhit())
+		{
+			char key = _getch();
+			if (key == '>')
+			{
+				currLevel++;
+				currstate = gameState::level_select;
+				return true;
+			}
+			if (key == ESC) 
+			{
+				return false;
+			}
+		}
+	}
+}
+void Game::getPlayerInput(char& key)
+{
+	if (_kbhit()) {
+		key = _getch();
+		if (key == ESC) {
+			pBoard.printPause();
+			pause_game = true;
+		}
+		PauseGame();
+	}
+	
+}
+
+
 

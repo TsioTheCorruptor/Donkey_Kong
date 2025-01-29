@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "utils.h"
 #include <cstring>
@@ -6,6 +6,7 @@
 #include <fstream>
 
 class Board {
+	bool dontPrint = false;
 	static constexpr int MAX_X = 80;
 	static constexpr int MAX_Y = 25;
 	const int currLevelBoardHeight = 0;
@@ -151,9 +152,9 @@ class Board {
 	"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",//24
 
 	};
-	char Level[MAX_Y][MAX_X +1];
-	char currentBoard[MAX_Y][MAX_X + 1]; // +1 for null terminator
-	char currentstaticBoard[MAX_Y][MAX_X + 1];
+	char Level[MAX_Y][MAX_X + 1] = {};
+	char currentBoard[MAX_Y][MAX_X + 1] = {}; // +1 for null terminator
+	char currentstaticBoard[MAX_Y][MAX_X + 1] = {};
 	
 public:
 	
@@ -165,6 +166,7 @@ public:
 	void printGameOver()const;
 	void printVictory()const;
 	void printInstructions()const;
+	void allowPrint(bool input) { dontPrint = !input; }
 	bool load(const std::string& filename);
 	const char getChar(int x, int y) const;
 	const char getOgChar(int x, int y) const;

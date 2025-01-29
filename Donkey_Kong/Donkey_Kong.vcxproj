@@ -137,11 +137,15 @@
     <ClCompile Include="Barreles.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="ClimbingGhost.cpp" />
+    <ClCompile Include="gameModes.cpp" />
     <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="LoadMode.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gameManager.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="movement.cpp" />
+    <ClCompile Include="SaveMode.cpp" />
+    <ClCompile Include="SilentMode.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +154,13 @@
     <ClInclude Include="board.h" />
     <ClInclude Include="ClimbingGhost.h" />
     <ClInclude Include="gameManager.h" />
+    <ClInclude Include="gameModes.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="LoadMode.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="movement.h" />
+    <ClInclude Include="SaveMode.h" />
+    <ClInclude Include="SilentMode.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
