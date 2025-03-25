@@ -8,7 +8,8 @@ public:
 		iterationTime = 0;
 		pBoard.allowPrint(false);
 	}
-	virtual void printTimeScore();
-	virtual void printGameInfo()const {};
+	virtual ~SilentMode() {}
+	 void printTimeScore()override;
+	 void printGameInfo()const override {};
 
 };

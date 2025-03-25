@@ -56,12 +56,12 @@ for (int i = 0; i < MAX_Y - 1; i++) {
 void Board::printEmpty() const{
 
 	gotoxy(0, 0);
-	if (!dontPrint) {
+	
 for (int i = 0; i < MAX_Y - 1; i++) {
 		std::cout << EmptyBoard[i] << '\n';
 	}
 	std::cout << EmptyBoard[MAX_Y - 1];
-	}
+	
 	
 }
 void Board::printMenu() const {

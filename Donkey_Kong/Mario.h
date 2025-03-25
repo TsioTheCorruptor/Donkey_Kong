@@ -46,7 +46,7 @@ class Mario {
 
 public:
 	
-	Mario(const char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard, Abilities& player_abilities) :
+	Mario( char player_char,const char ladder_Char,Pointmovement& player_Movement,Board& pBoard, Abilities& player_abilities) :
 		mario_char(player_char),ladder_char(ladder_Char), player_movement(&player_Movement), board(&pBoard), player_abilities(&player_abilities){}
 
 	void Jump();

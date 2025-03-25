@@ -3,7 +3,7 @@
 #include "gameManager.h"
 void Game::level() {
 	
-	
+	scoreIterationCount = 0;
 	ShowConsoleCursor(false);
 	Pointmovement player_point(PlayableChars[int(PlayableChar::player_char)],playerStart.x,playerStart.y,pBoard);
 	ResetLevel(player_point);
@@ -14,9 +14,10 @@ void Game::level() {
 	//each reset,before the game loop
 
 	while (true) {
-		printTimeScore();
+		
 		if (stopGameLoop())
 			break;
+        printTimeScore();
 		//Every "barrel_waitTime" iterations create a new barrel 
 		if (curr_barrel_waitTime >=barrel_waitTime&&PCharsAmount[int(PlayableChar::dk_char)]!=0) {
 			barrel.emplace_back( Barrel(PlayableChars[int(PlayableChar::barrel_char)],barrelStart.x, barrelStart.y, pBoard, PlayableChars[int(PlayableChar::player_char)]));
@@ -85,7 +86,7 @@ void Game::level() {
 		curr_barrel_waitTime++;	
 		
 	}
-	doAfterLoop();
+	
 }
 //the entire game loop
 void Game::main_game(){
@@ -313,11 +314,6 @@ void Game::checkGhostsColliding() {
 	for (int i = 0; i < ghost.size(); ++i) {
 		(*ghost[i]).ghostCollision();
 	}
-
-	//check all climbing ghosts
-	/*for (int i = 0; i < climbingGhost.size(); ++i) {
-		climbingGhost[i].ghostCollision();
-	}*/
 }
 void Game::MoveGhosts() {
   
@@ -588,6 +584,8 @@ void Game::printGameInfo() const
 void Game::printTimeScore() {
 	scoreIterationCount++;
 	if (scoreIterationCount >= iterationUntilSec) {
+		if (GameTime == 15)
+			int y = 0;
 		GameTime++;
 		gotoxy(legendCoord.x, legendCoord.y + 2);
 		std::cout << "Time: " << GameTime;
